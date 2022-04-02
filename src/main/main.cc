@@ -5,13 +5,15 @@
 // #define NCURSES
 
 int main() {
-  MapUI x;
-  #ifdef NCURSES
-    x.PlotMap();
-    x.DynamicPrintMenu();
-  #else
-    x.PlotMap();
-    x.PrintMenu();
-  #endif
-  return 0;
+    TrojanMap trojanmap;
+    MapUI x;
+    #ifdef NCURSES
+      x.PlotMap();
+      x.DynamicPrintMenu();
+    #else
+      x.PlotMap();
+      x.PrintMenu();
+    #endif
+    
+    return 0;
 }

@@ -277,41 +277,42 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
  * CreateGraphFromCSVFile: Read the map data from the csv file
  * 
  */
+#include <unistd.h>
 void TrojanMap::CreateGraphFromCSVFile() {
   // Do not change this function
-  std::fstream fin;
-  fin.open("src/lib/data.csv", std::ios::in);
-  std::string line, word;
-
-  getline(fin, line);
-  while (getline(fin, line)) {
-    std::stringstream s(line);
-
-    Node n;
-    int count = 0;
-    while (getline(s, word, ',')) {
-      word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
-      if (count == 0)
-        n.id = word;
-      else if (count == 1)
-        n.lat = stod(word);
-      else if (count == 2)
-        n.lon = stod(word);
-      else if (count == 3)
-        n.name = word;
-      else {
-        word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
-        if (isalpha(word[0]))
-          n.attributes.insert(word);
-        if (isdigit(word[0]))
-          n.neighbors.push_back(word);
-      }
-      count++;
-    }
-    data[n.id] = n;
+    std::fstream fin;
+    fin.open("./src/lib/data.csv", std::ios::in);
+    std::string line, word;
+    assert(fin.is_open());
+    getline(fin, line);
+    while (getline(fin, line)) {
+        std::stringstream s(line);
+        
+        Node n;
+        int count = 0;
+        while (getline(s, word, ',')) {
+            word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
+            if (count == 0)
+                n.id = word;
+            else if (count == 1)
+                n.lat = stod(word);
+            else if (count == 2)
+                n.lon = stod(word);
+            else if (count == 3)
+                n.name = word;
+            else {
+                word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
+            if (isalpha(word[0]))
+                n.attributes.insert(word);
+            if (isdigit(word[0]))
+                n.neighbors.push_back(word);
+            }
+            count++;
+        }
+        data[n.id] = n;
   }
   fin.close();
 }
