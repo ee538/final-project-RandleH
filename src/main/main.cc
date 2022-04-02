@@ -1,6 +1,7 @@
 #include <iostream>
-#include "src/lib/trojanmap.h"
-#include "src/lib/mapui.h"
+
+#include "mapui.h"
+#include "trojanmap.h"
 // #define NCURSES
 
 int main() {
