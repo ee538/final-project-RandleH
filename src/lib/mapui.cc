@@ -476,7 +476,7 @@ void MapUI::PlotPoints(std::vector<std::string> &location_ids) {
  * @param  {std::vector<double>} square : boundary
  */
 void MapUI::PlotMap() {
-  std::string image_path = cv::samples::findFile("/Users/randle_h/Desktop/final-project-RandleH/src/lib/map.png");
+  std::string image_path = cv::samples::findFile("./src/lib/map.png");
   cv::Mat img = cv::imread(image_path, cv::IMREAD_COLOR);
   // cv::resize(img, img, cv::Size(img.cols, img.rows));
   for (auto& kv : map.data) {

@@ -277,7 +277,6 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
  * CreateGraphFromCSVFile: Read the map data from the csv file
  * 
  */
-#include <unistd.h>
 void TrojanMap::CreateGraphFromCSVFile() {
   // Do not change this function
     std::fstream fin;

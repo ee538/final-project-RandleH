@@ -154,6 +154,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DAD3FDBE27F9522C00915990 /* ee538_final.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ee538_final.entitlements; sourceTree = "<group>"; };
 		DAE13D6327F7DC8500047D75 /* libopencv_calib3d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_calib3d.a; path = ../../../../../opt/homebrew/Cellar/opencv/4.5.5/lib/libopencv_calib3d.a; sourceTree = "<group>"; };
 		DAE13D6427F7DC8500047D75 /* libopencv_video.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_video.a; path = ../../../../../opt/homebrew/Cellar/opencv/4.5.5/lib/libopencv_video.a; sourceTree = "<group>"; };
 		DAE13D6527F7DC8500047D75 /* libopencv_photo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_photo.a; path = ../../../../../opt/homebrew/Cellar/opencv/4.5.5/lib/libopencv_photo.a; sourceTree = "<group>"; };
@@ -437,6 +438,7 @@
 		E35E555327F7B41B002EBAE3 = {
 			isa = PBXGroup;
 			children = (
+				DAD3FDBE27F9522C00915990 /* ee538_final.entitlements */,
 				E35E556827F7B489002EBAE3 /* src */,
 				E35E555D27F7B41B002EBAE3 /* Products */,
 				E35E557C27F7BDFD002EBAE3 /* Frameworks */,
@@ -645,7 +647,7 @@
 		E35E555427F7B41B002EBAE3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					E35E555B27F7B41B002EBAE3 = {
 						CreatedOnToolsVersion = 12.1;
@@ -799,17 +801,16 @@
 		E35E556427F7B41B002EBAE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = ee538_final.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MVU89C43SX;
-				ENABLE_HARDENED_RUNTIME = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					/usr/local/Cellar/opencv/4.4.0_1/include/opencv4,
-					/opt/homebrew/Cellar/opencv/4.5.5/include/opencv4,
-				);
+				ENABLE_HARDENED_RUNTIME = NO;
+				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/Cellar/opencv/4.5.5/include/opencv4;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/opencv/4.4.0_1/lib,
 					/opt/homebrew/Cellar/opencv/4.5.5/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -819,17 +820,16 @@
 		E35E556527F7B41B002EBAE3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = ee538_final.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MVU89C43SX;
-				ENABLE_HARDENED_RUNTIME = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					/usr/local/Cellar/opencv/4.4.0_1/include/opencv4,
-					/opt/homebrew/Cellar/opencv/4.5.5/include/opencv4,
-				);
+				ENABLE_HARDENED_RUNTIME = NO;
+				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/Cellar/opencv/4.5.5/include/opencv4;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/opencv/4.4.0_1/lib,
 					/opt/homebrew/Cellar/opencv/4.5.5/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
