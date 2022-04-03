@@ -28,6 +28,7 @@ class Node {
     std::vector<std::string> neighbors;  // List of the ids of all neighbor points.
     std::unordered_set<std::string> attributes;  // List of the attributes of the location.
 };
+
 using namespace std;
 class TrojanMap {
  public:
@@ -36,10 +37,10 @@ class TrojanMap {
       CreateGraphFromCSVFile();
       for( auto &i : this->data){
           if( i.second.name.empty()==false ){
-              list_name_.push_back(i.second.name);
+              v_name_node_.push_back( std::make_pair(i.second.name, i.second) );
           }
       }
-      std::sort(list_name_.begin(), list_name_.end(), std::less<std::string>());
+      std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const std::pair<std::string, Node> &a,const std::pair<std::string, Node> &b){ return a.first<b.first;} );
   };
   
   // A map of ids to Nodes.
@@ -135,7 +136,7 @@ class TrojanMap {
   //----------------------------------------------------- User-defined functions
   
 //private:
-    std::vector<std::string> list_name_;
+    std::vector< std::pair<std::string, Node> > v_name_node_;
 };
 
 #endif

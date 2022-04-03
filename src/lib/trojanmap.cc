@@ -62,8 +62,19 @@ std::string TrojanMap::GetID(const std::string& name) {
  * @return {std::pair<double,double>}  : (lat, lon)
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
-  std::pair<double, double> results(-1, -1);
-  return results;
+    size_t l=0, r=v_name_node_.size()-1;
+    while( l<=r ){
+        size_t m = (size_t)((l+r)>>1);
+        if( v_name_node_[m].first == name ){
+            return std::make_pair(v_name_node_[m].second.lat, v_name_node_[m].second.lon);
+        }else if( v_name_node_[m].first < name ){
+            l = m+1;
+        }else{
+            r = m-1;
+        }
+    }
+    
+    return std::make_pair((double)(-1), (double)(-1));
 }
 
 
@@ -96,39 +107,43 @@ std::string TrojanMap::FindClosestName(std::string name) {
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     std::vector<std::string> results;
-    size_t l=0, r=this->list_name_.size()-1;
+    size_t l=0, r=v_name_node_.size()-1;
     
     const std::string name_largest  (name+'z');
     const std::string name_smallest (name+' ');
-    auto a = list_name_.begin();
-    auto b = list_name_.end();
+    auto a = v_name_node_.begin();
+    auto b = v_name_node_.end();
     
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_smallest == this->list_name_[m] ){
+        if( name_smallest == v_name_node_[m].first ){
             break;
-        }else if( name_smallest > this->list_name_[m] ){
+        }else if( name_smallest > v_name_node_[m].first ){
             l = m+1;
-        }else if( name_smallest < this->list_name_[m] ){
+        }else if( name_smallest < v_name_node_[m].first ){
             r = m-1;
         }
     }
-    a = list_name_.begin()+((l+r)>>1); //cout<<(*a)<<endl;
+    a = v_name_node_.begin()+((l+r)>>1); //cout<<(*a)<<endl;
     
-    l=0; r=this->list_name_.size()-1;
+    l=0; r=v_name_node_.size()-1;
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_largest == this->list_name_[m] ){
+        if( name_largest == v_name_node_[m].first ){
             break;
-        }else if( name_largest > this->list_name_[m] ){
+        }else if( name_largest > v_name_node_[m].first ){
             l = m+1;
-        }else if( name_largest < this->list_name_[m] ){
+        }else if( name_largest < v_name_node_[m].first ){
             r = m-1;
         }
     }
-    b = list_name_.begin()+((l+r)>>1); //cout<<(*b)<<endl;
-
-    return std::vector<std::string>(a+1,b+1);
+    b = v_name_node_.begin()+((l+r)>>1); //cout<<(*b)<<endl;
+    ++a;++b;
+    
+    for( auto &i=a; i!=b; ++i){
+        results.push_back(i->first);
+    }
+    return results;
 }
 
 /**
