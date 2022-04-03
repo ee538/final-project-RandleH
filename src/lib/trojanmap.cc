@@ -95,8 +95,40 @@ std::string TrojanMap::FindClosestName(std::string name) {
  * @return {std::vector<std::string>}  : a vector of full names
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
-  std::vector<std::string> results;
-  return results;
+    std::vector<std::string> results;
+    size_t l=0, r=this->list_name_.size()-1;
+    
+    const std::string name_largest  (name+'z');
+    const std::string name_smallest (name+' ');
+    auto a = list_name_.begin();
+    auto b = list_name_.end();
+    
+    while( l<=r ){
+        size_t m=((l+r)>>1);
+        if( name_smallest == this->list_name_[m] ){
+            break;
+        }else if( name_smallest > this->list_name_[m] ){
+            l = m+1;
+        }else if( name_smallest < this->list_name_[m] ){
+            r = m-1;
+        }
+    }
+    a = list_name_.begin()+((l+r)>>1); //cout<<(*a)<<endl;
+    
+    l=0; r=this->list_name_.size()-1;
+    while( l<=r ){
+        size_t m=((l+r)>>1);
+        if( name_largest == this->list_name_[m] ){
+            break;
+        }else if( name_largest > this->list_name_[m] ){
+            l = m+1;
+        }else if( name_largest < this->list_name_[m] ){
+            r = m-1;
+        }
+    }
+    b = list_name_.begin()+((l+r)>>1); //cout<<(*b)<<endl;
+
+    return std::vector<std::string>(a+1,b+1);
 }
 
 /**
