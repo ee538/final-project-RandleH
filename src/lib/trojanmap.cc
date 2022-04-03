@@ -109,6 +109,9 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     std::vector<std::string> results;
     size_t l=0, r=v_name_node_.size()-1;
     
+    // Convert to lower case
+    transform(name.begin(), name.end(), name.begin(), ::tolower);
+    
     const std::string name_largest  (name+'z');
     const std::string name_smallest (name+' ');
     auto a = v_name_node_.begin();
@@ -116,11 +119,11 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_smallest == v_name_node_[m].first ){
+        if( name_smallest == tolowercase_(v_name_node_[m].first) ){
             break;
-        }else if( name_smallest > v_name_node_[m].first ){
+        }else if( name_smallest > tolowercase_(v_name_node_[m].first) ){
             l = m+1;
-        }else if( name_smallest < v_name_node_[m].first ){
+        }else if( name_smallest < tolowercase_(v_name_node_[m].first) ){
             r = m-1;
         }
     }
@@ -129,11 +132,11 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     l=0; r=v_name_node_.size()-1;
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_largest == v_name_node_[m].first ){
+        if( name_largest == tolowercase_(v_name_node_[m].first) ){
             break;
-        }else if( name_largest > v_name_node_[m].first ){
+        }else if( name_largest > tolowercase_(v_name_node_[m].first) ){
             l = m+1;
-        }else if( name_largest < v_name_node_[m].first ){
+        }else if( name_largest < tolowercase_(v_name_node_[m].first) ){
             r = m-1;
         }
     }

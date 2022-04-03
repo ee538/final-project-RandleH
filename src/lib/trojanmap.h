@@ -137,6 +137,12 @@ class TrojanMap {
   
 //private:
     std::vector< std::pair<std::string, Node> > v_name_node_;
+    
+    std::string tolowercase_(const std::string &str){
+        std::string tmp = str;
+        transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+        return tmp;
+    }
 };
 
 #endif
