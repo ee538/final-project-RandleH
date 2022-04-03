@@ -24,7 +24,7 @@
 class MapUI {
  private:
   TrojanMap map;
-
+//..//
  public:
   // Create the menu.
   void PrintMenu();
