@@ -3,7 +3,7 @@
 #include "mapui.h"
 #include "trojanmap.h"
 // #define NCURSES
-
+//.1111.//
 int main() {
     TrojanMap trojanmap;
     MapUI x;
