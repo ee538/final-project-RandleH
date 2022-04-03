@@ -1,5 +1,18 @@
 #include "trojanmap.h"
 
+// ========================================================================================================
+// Self-defined Function
+// ========================================================================================================
+namespace rhqwq{
+
+static std::string tolowercase_(const std::string &str){
+    std::string tmp = str;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+    return tmp;
+}
+
+}
+
 //-----------------------------------------------------
 // TODO: Student should implement the following:
 //-----------------------------------------------------
@@ -119,11 +132,11 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_smallest == tolowercase_(v_name_node_[m].first) ){
+        if( name_smallest == rhqwq::tolowercase_(v_name_node_[m].first) ){
             break;
-        }else if( name_smallest > tolowercase_(v_name_node_[m].first) ){
+        }else if( name_smallest > rhqwq::tolowercase_(v_name_node_[m].first) ){
             l = m+1;
-        }else if( name_smallest < tolowercase_(v_name_node_[m].first) ){
+        }else if( name_smallest < rhqwq::tolowercase_(v_name_node_[m].first) ){
             r = m-1;
         }
     }
@@ -132,11 +145,11 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     l=0; r=v_name_node_.size()-1;
     while( l<=r ){
         size_t m=((l+r)>>1);
-        if( name_largest == tolowercase_(v_name_node_[m].first) ){
+        if( name_largest == rhqwq::tolowercase_(v_name_node_[m].first) ){
             break;
-        }else if( name_largest > tolowercase_(v_name_node_[m].first) ){
+        }else if( name_largest > rhqwq::tolowercase_(v_name_node_[m].first) ){
             l = m+1;
-        }else if( name_largest < tolowercase_(v_name_node_[m].first) ){
+        }else if( name_largest < rhqwq::tolowercase_(v_name_node_[m].first) ){
             r = m-1;
         }
     }

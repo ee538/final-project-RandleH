@@ -16,18 +16,35 @@
 #include <sstream>
 #include <climits>
 
+
+// ========================================================================================================
+// Data Structure
+// ========================================================================================================
+
 // A Node is the location of one point in the map.
 class Node {
   public:
     Node(){};
     Node(const Node &n){id = n.id; lat = n.lat; lon = n.lon; name = n.name; neighbors = n.neighbors; attributes = n.attributes;};
-    std::string id;    // A unique id assign to each point
-    double lat;        // Latitude
-    double lon;        // Longitude
-    std::string name;  // Name of the location. E.g. "Bank of America".
-    std::vector<std::string> neighbors;  // List of the ids of all neighbor points.
-    std::unordered_set<std::string> attributes;  // List of the attributes of the location.
+    std::string id;                                    // A unique id assign to each point
+    double lat;                                        // Latitude
+    double lon;                                        // Longitude
+    std::string name;                                  // Name of the location. E.g. "Bank of America".
+    std::vector<std::string> neighbors;                // List of the ids of all neighbor points.
+    std::unordered_set<std::string> attributes;        // List of the attributes of the location.
 };
+
+// Self-defined implimentation
+namespace rhqwq{
+// Data Structure
+typedef std::pair<std::string, Node>   NameNode_t;     // A pair binding the location name with its node information.
+typedef std::vector< NameNode_t >      V_NameNode_t;   // A vector contains a bunch of such combinations.
+
+}
+
+// ========================================================================================================
+// Class Declaration
+// ========================================================================================================
 
 using namespace std;
 class TrojanMap {
@@ -136,13 +153,9 @@ class TrojanMap {
   //----------------------------------------------------- User-defined functions
   
 //private:
-    std::vector< std::pair<std::string, Node> > v_name_node_;
+    rhqwq::V_NameNode_t v_name_node_;
     
-    std::string tolowercase_(const std::string &str){
-        std::string tmp = str;
-        transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-        return tmp;
-    }
+    
 };
 
 #endif
