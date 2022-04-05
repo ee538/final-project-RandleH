@@ -155,7 +155,6 @@ class TrojanMap {
 //private:
     rhqwq::V_NameNode_t v_name_node_;
     
-    
 };
 
 #endif

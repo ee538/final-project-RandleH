@@ -575,7 +575,7 @@ Please create a new REPORT.md file and write your report there.
          - Please develope your own UI.
          - Example
             <p align="center"><img src="img/ncurses example.gif" alt="example" width="500"/></p>
-               
+            
 
       4. Accurate measurement of your algorithm    runtime using Google Benchmark while sweeping the input size and providing a diagram of how the runtime grows based on the input size: 10 points.
 

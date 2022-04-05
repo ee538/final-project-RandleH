@@ -4,7 +4,6 @@
 // Self-defined Function
 // ========================================================================================================
 namespace rhqwq{
-
 static std::string tolowercase_(const std::string &str){
     std::string tmp = str;
     transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
@@ -23,7 +22,8 @@ static std::string tolowercase_(const std::string &str){
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(const std::string& id) {
-    return 0;
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.lat : (double)(-1) ;
 }
 
 /**
@@ -32,8 +32,9 @@ double TrojanMap::GetLat(const std::string& id) {
  * @param  {std::string} id : location id
  * @return {double}         : longitude
  */
-double TrojanMap::GetLon(const std::string& id) { 
-    return 0;
+double TrojanMap::GetLon(const std::string& id) {
+    auto it = data.find(id);
+    return  it!=data.end() ?  it->second.lon : (double)(-1);
 }
 
 /**
@@ -43,7 +44,8 @@ double TrojanMap::GetLon(const std::string& id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(const std::string& id) { 
-    return "";
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.name : nullptr ;
 }
 
 /**
@@ -53,7 +55,8 @@ std::string TrojanMap::GetName(const std::string& id) {
  * @return {std::vector<std::string>}  : neighbor ids
  */
 std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
-    return {};
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.neighbors : std::vector<std::string> {};
 }
 
 /**
@@ -64,8 +67,20 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
  * @return {int}  : id
  */
 std::string TrojanMap::GetID(const std::string& name) {
-  std::string res = "";
-  return res;
+    if( name.empty() ) return std::string("");
+    
+    size_t l=0, r=v_name_node_.size()-1;
+    while( l<=r){
+        auto m=((l+r)>>1);
+        if( v_name_node_[m].first==name ){
+            return v_name_node_[m].second.id;
+        }else if( v_name_node_[m].first > name ){
+            r = m-1;
+        }else{
+            l = m+1;
+        }
+    }
+    return std::string("");
 }
 
 /**
