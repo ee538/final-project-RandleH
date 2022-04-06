@@ -10,6 +10,29 @@ static std::string tolowercase_(const std::string &str){
     return tmp;
 }
 
+template<class T, class N>
+static std::pair<bool, N> binary_search_(const vector<std::pair<T,N> >& list, const T& tar, T (*call)(const T&)=nullptr ){
+    if( list.empty() ) return std::make_pair( false, N() );
+    
+#define LIST_TARGET  (T)( (call==nullptr) ? (list[m].first) : (call(list[m].first)))
+    
+    size_t l=0, r=list.size()-1;
+    auto m = ((l+r)>>1);
+    while( l<=r ){
+        m = ((l+r)>>1);
+        if( LIST_TARGET  == tar ){
+            return std::make_pair( true, list[m].second );
+        }else if( LIST_TARGET > tar ){
+            r = m-1;
+        }else{
+            l = m+1;
+        }
+    }
+
+    return std::make_pair( false, list[m].second );
+#undef LIST_TARGET
+}
+
 }
 
 //-----------------------------------------------------
@@ -68,19 +91,22 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
  */
 std::string TrojanMap::GetID(const std::string& name) {
     if( name.empty() ) return std::string("");
+
+//    size_t l=0, r=v_name_node_.size()-1;
+//    while( l<=r){
+//        auto m=((l+r)>>1);
+//        if( v_name_node_[m].first==name ){
+//            return v_name_node_[m].second.id;
+//        }else if( v_name_node_[m].first > name ){
+//            r = m-1;
+//        }else{
+//            l = m+1;
+//        }
+//    }
+//    return std::string("");
     
-    size_t l=0, r=v_name_node_.size()-1;
-    while( l<=r){
-        auto m=((l+r)>>1);
-        if( v_name_node_[m].first==name ){
-            return v_name_node_[m].second.id;
-        }else if( v_name_node_[m].first > name ){
-            r = m-1;
-        }else{
-            l = m+1;
-        }
-    }
-    return std::string("");
+    auto res = rhqwq::binary_search_( v_name_node_, name );
+    return (res.first==true)? res.second.id: std::string("");
 }
 
 /**
@@ -90,19 +116,21 @@ std::string TrojanMap::GetID(const std::string& name) {
  * @return {std::pair<double,double>}  : (lat, lon)
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
-    size_t l=0, r=v_name_node_.size()-1;
-    while( l<=r ){
-        size_t m = (size_t)((l+r)>>1);
-        if( v_name_node_[m].first == name ){
-            return std::make_pair(v_name_node_[m].second.lat, v_name_node_[m].second.lon);
-        }else if( v_name_node_[m].first < name ){
-            l = m+1;
-        }else{
-            r = m-1;
-        }
-    }
-    
-    return std::make_pair((double)(-1), (double)(-1));
+//    size_t l=0, r=v_name_node_.size()-1;
+//    while( l<=r ){
+//        size_t m = (size_t)((l+r)>>1);
+//        if( v_name_node_[m].first == name ){
+//            return std::make_pair(v_name_node_[m].second.lat, v_name_node_[m].second.lon);
+//        }else if( v_name_node_[m].first < name ){
+//            l = m+1;
+//        }else{
+//            r = m-1;
+//        }
+//    }
+    auto res = rhqwq::binary_search_(v_name_node_, name);
+    return (res.first==true)? \
+        std::make_pair( res.second.lat, res.second.lon):
+        std::make_pair(   (double)(-1),   (double)(-1));
 }
 
 
@@ -121,8 +149,7 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
-  std::string tmp = "";
-  return tmp;
+    return rhqwq::binary_search_(v_name_node_, name).second.name;
 }
 
 
@@ -156,7 +183,7 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
         }
     }
     a = v_name_node_.begin()+((l+r)>>1); //cout<<(*a)<<endl;
-    
+
     l=0; r=v_name_node_.size()-1;
     while( l<=r ){
         size_t m=((l+r)>>1);

@@ -6,15 +6,17 @@
 using namespace std;
 
 int main() {
+    TrojanMap tmap;
     
-    MapUI x;
-#ifdef NCURSES
-    x.PlotMap();
-    x.DynamicPrintMenu();
-#else
-    x.PlotMap();
-    x.PrintMenu();
-#endif
+    
+//    MapUI x;
+//#ifdef NCURSES
+//    x.PlotMap();
+//    x.DynamicPrintMenu();
+//#else
+//    x.PlotMap();
+//    x.PrintMenu();
+//#endif
 
     return 0;
 }
