@@ -1,5 +1,9 @@
 # Log 项目问题日志
 
+[EE538 Final Project] https://github.com/ee538/final-project-RandleH
+
+
+
 ## Xcode解除Hardened Runtime限制
 
 `问题`: 开始运行直接进dylib not load错误
@@ -69,3 +73,56 @@
 在进循环前先做一次`getline(fin, line);` 跳过表头. 即可正常读取坐标并绘制.
 
 <img src="/Users/randle_h/Library/Application Support/typora-user-images/image-20220402015744758.png" alt="image-20220402015744758" style="zoom:30%;" />
+
+
+
+
+
+## 排序算法与大小写敏感问题
+
+大小写敏感会使得数组的排序相对位置发生改变.
+
+
+
+
+
+## Autocomplete函数
+
+判断目标字符串是否包含于列表中的地点名称, 不可简单地判断字符串是否为子串关系.
+
+例如目标字符串`er` 和地点名称 `Department center`存在包含关系, 但不能作为Autocomplete的答案.
+
+
+
+
+
+
+
+## 可优化项
+
+```c++
+int TrojanMap::CalculateEditDistance(std::string a, std::string b);
+```
+
+> ```c++
+> int TrojanMap::CalculateEditDistance( const std::string& a, const std::string& b);
+> ```
+>
+>  
+
+
+
+
+
+```c++
+std::vector<std::string> TrojanMap::Autocomplete(std::string name);
+```
+
+> ```c++
+> std::vector<std::string> TrojanMap::Autocomplete(const std::string& name);
+> ```
+>
+> 
+
+
+

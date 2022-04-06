@@ -50,15 +50,7 @@ using namespace std;
 class TrojanMap {
  public:
   // Constructor
-  TrojanMap(){
-      CreateGraphFromCSVFile();
-      for( auto &i : this->data){
-          if( i.second.name.empty()==false ){
-              v_name_node_.push_back( std::make_pair(i.second.name, i.second) );
-          }
-      }
-      std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const std::pair<std::string, Node> &a,const std::pair<std::string, Node> &b){ return a.first<b.first;} );
-  };
+    TrojanMap();
   
   // A map of ids to Nodes.
   std::unordered_map<std::string, Node> data;  
@@ -153,8 +145,8 @@ class TrojanMap {
   //----------------------------------------------------- User-defined functions
   
 //private:
-    rhqwq::V_NameNode_t v_name_node_;
-    
+    rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
+    rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
 };
 
 #endif
