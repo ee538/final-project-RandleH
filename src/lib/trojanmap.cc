@@ -14,7 +14,7 @@ template<class T, class N>
 static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
     if( list.empty() ) return std::make_pair( false, -1 );
 
-    size_t l=0, r=list.size()-1;
+    int l=0, r=(int)(list.size()-1);
     auto m = ((l+r)>>1);
     while( l<=r ){
         m = ((l+r)>>1);
@@ -40,14 +40,14 @@ TrojanMap::TrojanMap(){
     for( auto &i : this->data){
         
         if( i.second.name.empty()==false ){
-            v_Name_node_.push_back( std::make_pair(                      i.second.name, i.second) );
-            v_name_node_.push_back( std::make_pair( rhqwq::tolowercase_(i.second.name), i.second) );
+            v_Name_node_.push_back( std::make_pair(                      i.second.name, &i.second) );
+            v_name_node_.push_back( std::make_pair( rhqwq::tolowercase_(i.second.name), &i.second) );
         }
     }
-    std::stable_sort( v_Name_node_.begin(), v_Name_node_.end(), [](const std::pair<std::string, Node> &a,const std::pair<std::string, Node> &b){ return (a.first)<(b.first);} );
+    std::stable_sort( v_Name_node_.begin(), v_Name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return (a.first)<(b.first);} );
     
     
-    std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const std::pair<std::string, Node> &a,const std::pair<std::string, Node> &b){ return rhqwq::tolowercase_(a.first) < rhqwq::tolowercase_(b.first);} );
+    std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return rhqwq::tolowercase_(a.first) < rhqwq::tolowercase_(b.first);} );
     
 };
 
@@ -109,7 +109,7 @@ std::string TrojanMap::GetID(const std::string& name) {
     if( name.empty() ) return std::string("");
     
     auto res = rhqwq::binary_search_( v_Name_node_, name );
-    return (res.first==true)? v_Name_node_[res.second].second.id: std::string("");
+    return (res.first==true)? v_Name_node_[res.second].second->id: std::string("");
 }
 
 /**
@@ -121,7 +121,7 @@ std::string TrojanMap::GetID(const std::string& name) {
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
     auto res = rhqwq::binary_search_(v_Name_node_, name);
     return (res.first==true)? \
-        std::make_pair( v_Name_node_[res.second].second.lat, v_Name_node_[res.second].second.lon):
+        std::make_pair( v_Name_node_[res.second].second->lat, v_Name_node_[res.second].second->lon):
         std::make_pair(   (double)(-1),   (double)(-1));
 }
 
@@ -151,7 +151,7 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
-    return v_Name_node_[rhqwq::binary_search_(v_Name_node_, name).second].second.name;
+    return v_Name_node_[rhqwq::binary_search_(v_Name_node_, name).second].second->name;
 }
 
 
@@ -178,7 +178,7 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     while( b->first.find( name )!=0 && b>=a ) --b;
     
     for( auto &i=a; i<=b; ++i){
-        results.push_back(i->second.name);
+        results.push_back(i->second->name);
     }
     return results;
 }

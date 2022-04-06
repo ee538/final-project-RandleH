@@ -1,73 +1,55 @@
 #include <iostream>
-
+#include <random>
 #include "mapui.h"
 #include "trojanmap.h"
 // #define NCURSES
 using namespace std;
 
-static std::string tolowercase_(const std::string &str){
-    std::string tmp = str;
-    transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-    return tmp;
-}
-
 #define RH_RECORD_TIME(func, print_func)({ clock_t cs = clock();func;clock_t ce = clock();print_func("RECORD_TIME:%ld\n",ce-cs); })
+
+using std::string;
+using std::random_device;
+using std::default_random_engine;
+
+string strRand(int length) {              // length: 产生字符串的长度
+    char tmp;                             // tmp: 暂存一个随机数
+    string buffer;                        // buffer: 保存返回值
+    
+    // 下面这两行比较重要:
+    random_device rd;                      // 产生一个 std::random_device 对象 rd
+    default_random_engine random(rd());    // 用 rd 初始化一个随机数发生器 random
+    
+    for (int i = 0; i < length; i++) {
+        tmp = random() % 36;               // 随机一个小于 36 的整数，0-9、A-Z 共 36 种字符
+        if (tmp < 10) {                    // 如果随机数小于 10，变换成一个阿拉伯数字的 ASCII
+            tmp += '0';
+        } else {                           // 否则，变换成一个大写字母的 ASCII
+            tmp -= 10;
+            tmp += 'A';
+        }
+        buffer += tmp;
+    }
+    return buffer;
+}
 
 int main() {
     TrojanMap tmap;
 
-    RH_RECORD_TIME(tmap.Autocomplete("fu"), printf);
+//    auto v = tmap.Autocomplete("9");
 //    for( auto&i:v )
 //        cout<< i<<endl;
     
-    RH_RECORD_TIME(tmap.Autocomplete("mi"), printf);
+   
     
     
 //    for( auto&i:v )
 //        cout<< i<<endl;
     
-//    std::string str1("arc");
-//    std::string str2("Arco");
-
-//    vector<string> v_str = {
-
-//       /* 0 */ "Adams Fuel",
-//       /* 1 */ "Adams Normandie Historic District",
-//       /* 2 */ "Adams-Normandie",
-//       /* 3 */ "Ahmanson Commons",
-//       /* 4 */ "All Peoples Christian Center",
-//       /* 5 */ "Amazon Hub Locker",
-//       /* 6 */ "American Hungarian Baptist Church",
-//       /* 7 */ "Annas Store",
-//       /* 8 */ "Antioch Temple Baptist Church",
-//       /* 9 */ "Apostolic Holy Cross Church",
-//       /* 10 */ "Arco",
-//       /* 11 */ "Axis on Twelfth",
-//       /* 12 */ "Bacari W Adam?",
-//       /* 13 */ "Bank of America",
-//       /* 14 */ "Basketball Co",
-//    };
-    
-    
-    
-//    auto a = v_str.begin()+9;
-//    auto b = v_str.begin()+13;
-//    while( tolowercase_(*a).find( tolowercase_("arc") )==string::npos ) ++a;
-//    while( tolowercase_(*b).find( tolowercase_("arc") )==string::npos ) --b;
-//
-//    cout<<*a<<endl;
-//    cout<<*b<<endl;
-    
-    
-    
-    
-
-//    for( auto&i:tmap.v_name_node_ ){
-//        cout<<i.first<<endl;
-//    }
-
-//    cout<<tmap.CalculateEditDistance("Rol", "Ralphs")<<endl;
-    
+    size_t cnt = INT_MAX;
+    while(cnt--){
+        tmap.Autocomplete(strRand(2));
+//        RH_RECORD_TIME(tmap.Autocomplete(strRand(2)), printf);
+    }
     
     
 //    MapUI x;

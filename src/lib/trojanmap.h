@@ -37,7 +37,7 @@ class Node {
 // Self-defined implimentation
 namespace rhqwq{
 // Data Structure
-typedef std::pair<std::string, Node>   NameNode_t;     // A pair binding the location name with its node information.
+typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
 typedef std::vector< NameNode_t >      V_NameNode_t;   // A vector contains a bunch of such combinations.
 
 }
