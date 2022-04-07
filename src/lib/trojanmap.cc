@@ -130,18 +130,31 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * CalculateEditDistance: Calculate edit distance between two location names
  * 
  */
-int TrojanMap::CalculateEditDistance(std::string a, std::string b){
-    int res = 0;
-    auto &c = a.length() >= b.length()? a:b;
-    auto &d = a.length() <  b.length()? a:b;
+int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
+    const size_t dp_size = (w1.size()+1)*(w2.size()+1)*sizeof(int);
+    int *dp = (int*)alloca( dp_size );
     
-    res += c.length()-d.length();
+    const size_t w = w2.size()+1;
+    const size_t h = w1.size()+1;
     
-    for (size_t i=0; i<d.length(); ++i) {
-        res += (bool)( (c[i]^d[i])!=0 );
+    int *ptr = (int *)memset( dp, -1, dp_size);
+    
+    w1 = " "+w1;
+    w2 = " "+w2;
+    
+    for( size_t j=0; j<w; ++j) *(ptr  +j) = (int)j; // 初始化dp[0][:]
+    for( size_t i=0; i<h; ++i) *(ptr+i*w) = (int)i; // 初始化dp[:][0]
+    ptr += w+1; // 从dp[1][1]开始
+
+    for (size_t i=1; i<w1.size(); ++i, ++ptr) {
+        for( size_t j=1; j<w2.size(); ++j, ++ptr ){
+            if( w1[i] == w2[j] )
+                *ptr = *(ptr-w-1);
+            else
+                *ptr = std::min( *(ptr  -w) , std::min(*(ptr  -1), *(ptr-w-1)) ) + 1;
+        }
     }
-    
-    return res;
+    return *(ptr-2); // 返回dp[-1][-1]
 }
 
 /**
