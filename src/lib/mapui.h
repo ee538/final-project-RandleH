@@ -9,7 +9,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <ncurses.h>
-#include "src/lib/ui.h"
+#include "ui.h"
 #endif
 
 #include <iostream>

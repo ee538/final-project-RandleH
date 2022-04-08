@@ -164,7 +164,24 @@ int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
+    
+#if 1 // Distance order
+    name = rhqwq::tolowercase_(name);
+
+    int min = INT_MAX;
+
+    auto &res = this->v_name_node_[0];
+    for (auto &i:this->v_name_node_) {
+        auto tmp = CalculateEditDistance(i.first, name);
+        if( tmp < min ){
+            min = tmp;
+            res = i;
+        }
+    }
+    return res.second->name;
+#else // Prefix order
     return v_Name_node_[rhqwq::binary_search_(v_Name_node_, name).second].second->name;
+#endif
 }
 
 
