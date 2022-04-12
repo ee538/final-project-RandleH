@@ -6,17 +6,12 @@
 using namespace std;
 
 
-
-
 #include "../../tests/rhqwq_test.hpp"
 
 
 
 int main() {
-
-//    TrojanMap tmap;
-//    RH_RECORD_TIME( tmap.FindClosestName("Rolphs"), printf);
-//    cout<<tmap.FindClosestName("shplar")<<endl;
+    
     MapUI x;
 #ifdef NCURSES
     x.PlotMap();

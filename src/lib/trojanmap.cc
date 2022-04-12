@@ -30,6 +30,25 @@ static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list
     return std::make_pair( false, m );
 }
 
+void strip_(std::string& str){
+    if (str.length() == 0) return;
+
+    auto start_it = str.begin();
+    auto end_it   = str.rbegin();
+    while (std::isspace(*start_it)) {
+        ++start_it;
+        if (start_it == str.end()) break;
+    }
+    while (std::isspace(*end_it)) {
+        ++end_it;
+        if (end_it == str.rend()) break;
+    }
+    auto start_pos = start_it - str.begin();
+    auto end_pos   = end_it.base() - str.begin();
+    str = (start_pos <= end_pos) ? std::string(start_it, end_it.base()) : "";
+}
+
+
 }
 
 
@@ -195,6 +214,9 @@ std::string TrojanMap::FindClosestName(std::string name) {
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     std::vector<std::string> results;
     
+    if( name.empty() ) return results;
+    rhqwq::strip_(name);
+    
     // Convert to lower case
     transform(name.begin(), name.end(), name.begin(), ::tolower);
     
@@ -256,8 +278,21 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
-  std::vector<std::string> path;
-  return path;
+    std::vector<std::string> path;
+    
+//    location1_name = this->FindClosestName(location1_name);
+//    location2_name = this->FindClosestName(location2_name);
+    
+//    Node *node1 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second);
+//    Node *node2 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second);
+    
+//    std::vector< std::pair<std::string, double> > temp( data.size(), std::make_pair(<#_T1 &&__t1#>, <#_T2 &&__t2#>) );
+
+    
+    
+    //...//
+    
+    return path;
 }
 
 /**
@@ -270,8 +305,14 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name){
-  std::vector<std::string> path;
-  return path;
+    
+    std::vector<std::string> path;
+    location1_name = this->FindClosestName(location1_name);
+    location2_name = this->FindClosestName(location2_name);
+    
+    
+    
+    return path;
 }
 
 /**
