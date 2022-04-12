@@ -1,16 +1,25 @@
 #include <iostream>
-#include "src/lib/trojanmap.h"
-#include "src/lib/mapui.h"
-// #define NCURSES
+
+#include "mapui.h"
+#include "trojanmap.h"
+
+using namespace std;
+
+
+#include "../../tests/rhqwq_test.hpp"
+
+
 
 int main() {
-  MapUI x;
-  #ifdef NCURSES
+    
+    MapUI x;
+#ifdef NCURSES
     x.PlotMap();
     x.DynamicPrintMenu();
-  #else
+#else
     x.PlotMap();
     x.PrintMenu();
-  #endif
-  return 0;
+#endif
+
+    return 0;
 }

@@ -1,5 +1,75 @@
 #include "trojanmap.h"
 
+// ========================================================================================================
+// Self-defined Function
+// ========================================================================================================
+namespace rhqwq{
+static std::string tolowercase_(const std::string &str){
+    std::string tmp = str;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+    return tmp;
+}
+
+template<class T, class N>
+static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
+    if( list.empty() ) return std::make_pair( false, -1 );
+
+    int l=0, r=(int)(list.size()-1);
+    auto m = ((l+r)>>1);
+    while( l<=r ){
+        m = ((l+r)>>1);
+        if( list[m].first == tar ){
+            return std::make_pair( true, m );
+        }else if( list[m].first > tar ){
+            r = m-1;
+        }else{
+            l = m+1;
+        }
+    }
+
+    return std::make_pair( false, m );
+}
+
+void strip_(std::string& str){
+    if (str.length() == 0) return;
+
+    auto start_it = str.begin();
+    auto end_it   = str.rbegin();
+    while (std::isspace(*start_it)) {
+        ++start_it;
+        if (start_it == str.end()) break;
+    }
+    while (std::isspace(*end_it)) {
+        ++end_it;
+        if (end_it == str.rend()) break;
+    }
+    auto start_pos = start_it - str.begin();
+    auto end_pos   = end_it.base() - str.begin();
+    str = (start_pos <= end_pos) ? std::string(start_it, end_it.base()) : "";
+}
+
+
+}
+
+
+TrojanMap::TrojanMap(){
+    CreateGraphFromCSVFile();
+
+    // Added by RandleH and QWQ.
+    for( auto &i : this->data){
+        
+        if( i.second.name.empty()==false ){
+            v_Name_node_.push_back( std::make_pair(                      i.second.name, &i.second) );
+            v_name_node_.push_back( std::make_pair( rhqwq::tolowercase_(i.second.name), &i.second) );
+        }
+    }
+    std::stable_sort( v_Name_node_.begin(), v_Name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return (a.first)<(b.first);} );
+    
+    
+    std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return rhqwq::tolowercase_(a.first) < rhqwq::tolowercase_(b.first);} );
+    
+};
+
 //-----------------------------------------------------
 // TODO: Student should implement the following:
 //-----------------------------------------------------
@@ -10,7 +80,8 @@
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(const std::string& id) {
-    return 0;
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.lat : (double)(-1);
 }
 
 /**
@@ -19,8 +90,9 @@ double TrojanMap::GetLat(const std::string& id) {
  * @param  {std::string} id : location id
  * @return {double}         : longitude
  */
-double TrojanMap::GetLon(const std::string& id) { 
-    return 0;
+double TrojanMap::GetLon(const std::string& id) {
+    auto it = data.find(id);
+    return  it!=data.end() ?  it->second.lon : (double)(-1);
 }
 
 /**
@@ -30,7 +102,8 @@ double TrojanMap::GetLon(const std::string& id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(const std::string& id) { 
-    return "";
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.name : nullptr ;
 }
 
 /**
@@ -40,7 +113,8 @@ std::string TrojanMap::GetName(const std::string& id) {
  * @return {std::vector<std::string>}  : neighbor ids
  */
 std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
-    return {};
+    auto it = data.find(id);
+    return  it!=data.end() ? it->second.neighbors : std::vector<std::string> {};
 }
 
 /**
@@ -51,8 +125,10 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
  * @return {int}  : id
  */
 std::string TrojanMap::GetID(const std::string& name) {
-  std::string res = "";
-  return res;
+    if( name.empty() ) return std::string("");
+    
+    auto res = rhqwq::binary_search_( v_Name_node_, name );
+    return (res.first==true)? v_Name_node_[res.second].second->id: std::string("");
 }
 
 /**
@@ -62,8 +138,10 @@ std::string TrojanMap::GetID(const std::string& name) {
  * @return {std::pair<double,double>}  : (lat, lon)
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
-  std::pair<double, double> results(-1, -1);
-  return results;
+    auto res = rhqwq::binary_search_(v_Name_node_, name);
+    return (res.first==true)? \
+        std::make_pair( v_Name_node_[res.second].second->lat, v_Name_node_[res.second].second->lon):
+        std::make_pair(   (double)(-1),   (double)(-1));
 }
 
 
@@ -71,8 +149,31 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * CalculateEditDistance: Calculate edit distance between two location names
  * 
  */
-int TrojanMap::CalculateEditDistance(std::string a, std::string b){
-    return 0;
+int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
+    const size_t dp_size = (w1.size()+1)*(w2.size()+1)*sizeof(int);
+    int *dp = (int*)alloca( dp_size );
+    
+    const size_t w = w2.size()+1;
+    const size_t h = w1.size()+1;
+    
+    int *ptr = (int *)memset( dp, -1, dp_size);
+    
+    w1 = " "+w1;
+    w2 = " "+w2;
+    
+    for( size_t j=0; j<w; ++j) *(ptr  +j) = (int)j; // 初始化dp[0][:]
+    for( size_t i=0; i<h; ++i) *(ptr+i*w) = (int)i; // 初始化dp[:][0]
+    ptr += w+1; // 从dp[1][1]开始
+
+    for (size_t i=1; i<w1.size(); ++i, ++ptr) {
+        for( size_t j=1; j<w2.size(); ++j, ++ptr ){
+            if( w1[i] == w2[j] )
+                *ptr = *(ptr-w-1);
+            else
+                *ptr = std::min( *(ptr  -w) , std::min(*(ptr  -1), *(ptr-w-1)) ) + 1;
+        }
+    }
+    return *(ptr-2); // 返回dp[-1][-1]
 }
 
 /**
@@ -82,8 +183,24 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
-  std::string tmp = "";
-  return tmp;
+    
+#if 1 // Distance order
+    name = rhqwq::tolowercase_(name);
+
+    int min = INT_MAX;
+
+    auto &res = this->v_name_node_[0];
+    for (auto &i:this->v_name_node_) {
+        auto tmp = CalculateEditDistance(i.first, name);
+        if( tmp < min ){
+            min = tmp;
+            res = i;
+        }
+    }
+    return res.second->name;
+#else // Prefix order
+    return v_Name_node_[rhqwq::binary_search_(v_Name_node_, name).second].second->name;
+#endif
 }
 
 
@@ -95,8 +212,27 @@ std::string TrojanMap::FindClosestName(std::string name) {
  * @return {std::vector<std::string>}  : a vector of full names
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
-  std::vector<std::string> results;
-  return results;
+    std::vector<std::string> results;
+    
+    if( name.empty() ) return results;
+    rhqwq::strip_(name);
+    
+    // Convert to lower case
+    transform(name.begin(), name.end(), name.begin(), ::tolower);
+    
+    const std::string name_largest  (name+'z');
+    const std::string name_smallest (name+' ');
+
+    auto a = v_name_node_.begin() + rhqwq::binary_search_(v_name_node_, name_smallest).second;
+    while( a->first.find( name )!=0 &&  a->first < name && a!=v_name_node_.end() ) ++a;
+
+    auto b = v_name_node_.begin() + rhqwq::binary_search_(v_name_node_, name_largest).second;
+    while( b->first.find( name )!=0 && b>=a ) --b;
+    
+    for( auto &i=a; i<=b; ++i){
+        results.push_back(i->second->name);
+    }
+    return results;
 }
 
 /**
@@ -142,8 +278,21 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
-  std::vector<std::string> path;
-  return path;
+    std::vector<std::string> path;
+    
+//    location1_name = this->FindClosestName(location1_name);
+//    location2_name = this->FindClosestName(location2_name);
+    
+//    Node *node1 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second);
+//    Node *node2 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second);
+    
+//    std::vector< std::pair<std::string, double> > temp( data.size(), std::make_pair(<#_T1 &&__t1#>, <#_T2 &&__t2#>) );
+
+    
+    
+    //...//
+    
+    return path;
 }
 
 /**
@@ -156,8 +305,14 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name){
-  std::vector<std::string> path;
-  return path;
+    
+    std::vector<std::string> path;
+    location1_name = this->FindClosestName(location1_name);
+    location2_name = this->FindClosestName(location2_name);
+    
+    
+    
+    return path;
 }
 
 /**
@@ -279,39 +434,39 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
  */
 void TrojanMap::CreateGraphFromCSVFile() {
   // Do not change this function
-  std::fstream fin;
-  fin.open("src/lib/data.csv", std::ios::in);
-  std::string line, word;
-
-  getline(fin, line);
-  while (getline(fin, line)) {
-    std::stringstream s(line);
-
-    Node n;
-    int count = 0;
-    while (getline(s, word, ',')) {
-      word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
-      word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
-      if (count == 0)
-        n.id = word;
-      else if (count == 1)
-        n.lat = stod(word);
-      else if (count == 2)
-        n.lon = stod(word);
-      else if (count == 3)
-        n.name = word;
-      else {
-        word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
-        if (isalpha(word[0]))
-          n.attributes.insert(word);
-        if (isdigit(word[0]))
-          n.neighbors.push_back(word);
-      }
-      count++;
-    }
-    data[n.id] = n;
+    std::fstream fin;
+    fin.open("./src/lib/data.csv", std::ios::in);
+    std::string line, word;
+    assert(fin.is_open());
+    getline(fin, line);
+    while (getline(fin, line)) {
+        std::stringstream s(line);
+        
+        Node n;
+        int count = 0;
+        while (getline(s, word, ',')) {
+            word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
+            if (count == 0)
+                n.id = word;
+            else if (count == 1)
+                n.lat = stod(word);
+            else if (count == 2)
+                n.lon = stod(word);
+            else if (count == 3)
+                n.name = word;
+            else {
+                word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
+            if (isalpha(word[0]))
+                n.attributes.insert(word);
+            if (isdigit(word[0]))
+                n.neighbors.push_back(word);
+            }
+            count++;
+        }
+        data[n.id] = n;
   }
   fin.close();
 }

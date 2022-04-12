@@ -16,23 +16,41 @@
 #include <sstream>
 #include <climits>
 
+
+// ========================================================================================================
+// Data Structure
+// ========================================================================================================
+
 // A Node is the location of one point in the map.
 class Node {
   public:
     Node(){};
     Node(const Node &n){id = n.id; lat = n.lat; lon = n.lon; name = n.name; neighbors = n.neighbors; attributes = n.attributes;};
-    std::string id;    // A unique id assign to each point
-    double lat;        // Latitude
-    double lon;        // Longitude
-    std::string name;  // Name of the location. E.g. "Bank of America".
-    std::vector<std::string> neighbors;  // List of the ids of all neighbor points.
-    std::unordered_set<std::string> attributes;  // List of the attributes of the location.
+    std::string id;                                    // A unique id assign to each point
+    double lat;                                        // Latitude
+    double lon;                                        // Longitude
+    std::string name;                                  // Name of the location. E.g. "Bank of America".
+    std::vector<std::string> neighbors;                // List of the ids of all neighbor points.
+    std::unordered_set<std::string> attributes;        // List of the attributes of the location.
 };
 
+// Self-defined implimentation
+namespace rhqwq{
+// Data Structure
+typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
+typedef std::vector< NameNode_t >      V_NameNode_t;   // A vector contains a bunch of such combinations.
+
+}
+
+// ========================================================================================================
+// Class Declaration
+// ========================================================================================================
+
+using namespace std;
 class TrojanMap {
  public:
   // Constructor
-  TrojanMap(){CreateGraphFromCSVFile();};
+    TrojanMap();
   
   // A map of ids to Nodes.
   std::unordered_map<std::string, Node> data;  
@@ -125,7 +143,10 @@ class TrojanMap {
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
   //----------------------------------------------------- User-defined functions
-
+  
+//private:
+    rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
+    rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
 };
 
 #endif

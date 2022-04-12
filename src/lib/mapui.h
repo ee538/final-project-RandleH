@@ -9,7 +9,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <ncurses.h>
-#include "src/lib/ui.h"
+#include "ui.h"
 #endif
 
 #include <iostream>
@@ -24,7 +24,7 @@
 class MapUI {
  private:
   TrojanMap map;
-
+//..//
  public:
   // Create the menu.
   void PrintMenu();
