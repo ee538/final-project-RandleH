@@ -197,6 +197,7 @@ std::string TrojanMap::FindClosestName(std::string name) {
             res = i;
         }
     }
+    assert( min!=INT_MAX );  // Problems in <v_name_node>.
     return res.second->name;
 #else // Prefix order
     return v_Name_node_[rhqwq::binary_search_(v_Name_node_, name).second].second->name;
@@ -220,8 +221,8 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name){
     // Convert to lower case
     transform(name.begin(), name.end(), name.begin(), ::tolower);
     
-    const std::string name_largest  (name+'z');
-    const std::string name_smallest (name+' ');
+    const std::string name_largest  (name+'z'); // Biggest valid name with prefix order.
+    const std::string name_smallest (name+' '); // (Same)
 
     auto a = v_name_node_.begin() + rhqwq::binary_search_(v_name_node_, name_smallest).second;
     while( a->first.find( name )!=0 &&  a->first < name && a!=v_name_node_.end() ) ++a;
