@@ -56,6 +56,7 @@ TrojanMap::TrojanMap(){
 
     // Added by RandleH and QWQ.
     for( auto &i : this->data){
+        m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
         
         if( i.second.name.empty()==false ){
             v_Name_node_.push_back( std::make_pair(                      i.second.name, &i.second) );
@@ -63,9 +64,10 @@ TrojanMap::TrojanMap(){
         }
     }
     std::stable_sort( v_Name_node_.begin(), v_Name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return (a.first)<(b.first);} );
-    
-    
+
     std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return rhqwq::tolowercase_(a.first) < rhqwq::tolowercase_(b.first);} );
+    
+    
     
 };
 
@@ -286,68 +288,56 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
     
     // Data Initilization
-    std::vector <rhqwq::DijkstraInfo_t >                  table(data.size());               // Dijkstra 算法表格
-    std::map    <rhqwq::NodeId_t, rhqwq::DijkstraInfo_t*> table_map;                        // 制作一份map table 方便根据id查找数据
-    
     auto cmp = []( const rhqwq::DijkstraInfo_t&a, const rhqwq::DijkstraInfo_t&b){return a.distance>b.distance;};
     std::priority_queue< rhqwq::DijkstraInfo_t, std::vector <rhqwq::DijkstraInfo_t>, decltype(cmp)>     table_unvisited_(cmp);
-    
-    
+
     {
-        size_t idx = 0;
         for( auto &i:data){
-            if( i.first == root.id )
-                continue;
-            else{
-                table[idx] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
+            
+            if( i.first==root.id ){
+                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second );
+                table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second ));
+            }else{
+                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
+                table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second ));
             }
-            ++idx;
+            
         }
-        table[idx] = rhqwq::DijkstraInfo_t( root.id, 0.0, &root ) ;             // 将跟节点放置末尾使得table sorted.
-        
-        auto *ptr = (&table.front());                                           // 拷贝一份引用(指针)table 用于遍历计算路径值
-        for( size_t i=0; i<table.size(); ++i, ++ptr ){                          // 制作一份map table 方便根据id查找数据
-            assert( ptr );
-            table_map[ table[i].id ] = ptr;
-            table_unvisited_.push( table[i] );
-        }
+
     }
 
     size_t visitedCnt = 0;
     while( visitedCnt < data.size() ){
-        auto *ptr = table_map[ table_unvisited_.top().id ];
+        auto &dij_cur = m_id_dijkstra_[ table_unvisited_.top().id ];
         table_unvisited_.pop();
-        assert( ptr );
-        assert( !ptr->id.empty() );
+        assert( !dij_cur.id.empty() );
         
-        for( auto &i:ptr->node->neighbors ){
-            rhqwq::DijkstraInfo_t *pNeighbor = table_map[i];
+        for( auto &i:dij_cur.node->neighbors ){
+            rhqwq::DijkstraInfo_t &dij_neighbor = m_id_dijkstra_[i];
             
-            if( pNeighbor->visited ) continue;
+            if( dij_neighbor.visited ) continue;
             
-            double distance = CalculateDistance( ptr->id, i );
-            if( ptr->distance + distance < pNeighbor->distance ){
+            double distance = CalculateDistance( dij_cur.id, i );
+            if( dij_cur.distance + distance < dij_neighbor.distance ){
                 // 查找 pNeighbor在数组中的位置
-                pNeighbor->distance = ptr->distance + distance;
-                pNeighbor->prev_id  = ptr->id;
+                dij_neighbor.distance = dij_cur.distance + distance;
+                dij_neighbor.prev_id  = dij_cur.id;
                 
-                table_unvisited_.push(*pNeighbor);
+                table_unvisited_.push(dij_neighbor);
 
             }
             
         }
-
-        ptr->visited = true;
-//        table_visited.push_back(ptr);
+        dij_cur.visited = true;
         ++visitedCnt;
     }
     
     // BackTracking
     
     auto tmp = dst.id;
-    while( table_map[tmp]->id != root.id ){
+    while( m_id_dijkstra_[tmp].id != root.id ){
         path.push_back(tmp);
-        tmp = table_map[tmp]->prev_id;
+        tmp = m_id_dijkstra_[tmp].prev_id;
     }
     path.push_back(root.id);
 

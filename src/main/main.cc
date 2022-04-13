@@ -78,9 +78,9 @@ int main() {
 //    cout<<pq.top()<<endl;
     
 
-//    TrojanMap tmap;
-//
-//    RH_RECORD_TIME(tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce"), printf);
+    TrojanMap tmap;
+
+    RH_RECORD_TIME(tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce"), printf);
     
 //    auto v = tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce");
 //
@@ -88,14 +88,14 @@ int main() {
 //        cout<<i<<"->"<<endl;
 //    }
 
-    MapUI x;
-#ifdef NCURSES
-    x.PlotMap();
-    x.DynamicPrintMenu();
-#else
-    x.PlotMap();
-    x.PrintMenu();
-#endif
+//    MapUI x;
+//#ifdef NCURSES
+//    x.PlotMap();
+//    x.DynamicPrintMenu();
+//#else
+//    x.PlotMap();
+//    x.PrintMenu();
+//#endif
     
     
 

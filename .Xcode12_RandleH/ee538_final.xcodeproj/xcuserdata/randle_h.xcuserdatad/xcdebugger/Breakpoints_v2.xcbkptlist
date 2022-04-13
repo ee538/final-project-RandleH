@@ -30,8 +30,8 @@
             filePath = "../src/lib/trojanmap.cc"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "496"
-            endingLineNumber = "496"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -46,8 +46,24 @@
             filePath = "../src/lib/trojanmap.cc"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "354"
-            endingLineNumber = "354"
+            startingLineNumber = "344"
+            endingLineNumber = "344"
+            landmarkName = "TrojanMap::CalculateShortestPath_Dijkstra(location1_name, location2_name)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F6596F48-E0EF-452F-B142-0C230ABCB607"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/lib/trojanmap.cc"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "310"
+            endingLineNumber = "310"
             landmarkName = "TrojanMap::CalculateShortestPath_Dijkstra(location1_name, location2_name)"
             landmarkType = "7">
          </BreakpointContent>
