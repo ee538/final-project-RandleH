@@ -63,45 +63,31 @@ static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list
     }
 }
 
-
+bool cmp_(const int&a, const int&b){return a>b;}
 
 int main() {
     
+//    auto cmp = [](const int&a, const int&b){return a>b;};
+//    std::priority_queue< int, std::vector<int>, decltype(cmp) > pq(cmp);
+//
+//    pq.push(2);
+//    pq.push(4);
+//    pq.push(6);
+//    pq.push(8);
+//
+//    cout<<pq.top()<<endl;
     
-//    vector<int> v={0};
-//
-//    const int tar = 0;
-//    if(  v.empty() || tar <= v.back() )
-//        v.push_back(tar);
-//    else{
-//        int l=0, r=(int)(v.size()-1);
-//        int m = ((l+r)>>1);
-//
-//        while( l<=r ){
-//            m = ((l+r)>>1);
-//            if( v[m] == tar ){
-//                break;
-//            }else if( v[m] > tar ){
-//                l = m+1;
-//            }else{
-//                r = m-1;
-//            }
-//        }
-//        cout<< m <<endl;
-//
-//        v.insert( v.begin()+m, tar);
-//    }
-//    for( auto &i:v ){
-//        cout<<i<<" ";
-//    }
 
 //    TrojanMap tmap;
+//
+//    RH_RECORD_TIME(tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce"), printf);
+    
 //    auto v = tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce");
 //
 //    for( auto &i:v ){
 //        cout<<i<<"->"<<endl;
 //    }
-    
+
     MapUI x;
 #ifdef NCURSES
     x.PlotMap();
@@ -112,30 +98,6 @@ int main() {
 #endif
     
     
-    
-//    vector<int> a = {0,3,6,2,7,2,89};
-//
-//    std::make_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    std::pop_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    cout<< a.back() << endl;
-//    a.pop_back();
-//
-//    a.push_back(-1);
-//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    a.push_back(-2);
-//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    a.push_back(-3);
-//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    std::pop_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
-//
-//    cout<< a.back() << endl;
-    
-
 
 
 
