@@ -45,10 +45,62 @@ double CalculateDistance_(const std::string &a, const std::string &b){
 }
 
 
-int main() {
+template<class T, class N>
+static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
+    if( list.empty() ) return std::make_pair( false, -1 );
 
+    int l=0, r=(int)(list.size()-1);
+    auto m = ((l+r)>>1);
+    while( l<=r ){
+        m = ((l+r)>>1);
+        if( list[m].first == tar ){
+            return std::make_pair( true, m );
+        }else if( list[m].first > tar ){
+            r = m-1;
+        }else{
+            l = m+1;
+        }
+    }
+}
+
+
+
+int main() {
     
     
+//    vector<int> v={0};
+//
+//    const int tar = 0;
+//    if(  v.empty() || tar <= v.back() )
+//        v.push_back(tar);
+//    else{
+//        int l=0, r=(int)(v.size()-1);
+//        int m = ((l+r)>>1);
+//
+//        while( l<=r ){
+//            m = ((l+r)>>1);
+//            if( v[m] == tar ){
+//                break;
+//            }else if( v[m] > tar ){
+//                l = m+1;
+//            }else{
+//                r = m-1;
+//            }
+//        }
+//        cout<< m <<endl;
+//
+//        v.insert( v.begin()+m, tar);
+//    }
+//    for( auto &i:v ){
+//        cout<<i<<" ";
+//    }
+
+//    TrojanMap tmap;
+//    auto v = tmap.CalculateShortestPath_Dijkstra( "Arco", "Dulce");
+//
+//    for( auto &i:v ){
+//        cout<<i<<"->"<<endl;
+//    }
     
     MapUI x;
 #ifdef NCURSES

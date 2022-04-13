@@ -42,15 +42,17 @@ typedef std::vector< NameNode_t >       V_NameNode_t;   // A vector contains a b
 typedef std::string NodeId_t;
 class DijkstraInfo_t{
 public:
-    NodeId_t  node;
-    NodeId_t  prev;
+    NodeId_t  id;
+    NodeId_t  prev_id;
+    Node     *node;
     bool      visited;
-    double  distance;
+    double    distance;
+    size_t    pos;
     DijkstraInfo_t(){}
-    DijkstraInfo_t( NodeId_t node_id            ):node(node_id),distance(INFINITY),visited(false){}
-    DijkstraInfo_t( NodeId_t node_id, double dis):node(node_id),distance(     dis),visited(false){}
-    DijkstraInfo_t( const DijkstraInfo_t& rhs ):node(rhs.node),distance(rhs.distance),visited(rhs.visited){
-    }
+    DijkstraInfo_t( NodeId_t node_id                                    ) :id(node_id),distance(INFINITY)    ,visited(false)       ,node(nullptr ), pos(0)  {}
+    DijkstraInfo_t( NodeId_t node_id, double dis, Node* node, size_t pos) :id(node_id),distance(     dis)    ,visited(false)       ,node(node    ), pos(pos){}
+    DijkstraInfo_t( const DijkstraInfo_t& rhs                           ) :id(rhs.id) ,distance(rhs.distance),visited(rhs.visited) ,node(rhs.node), pos(0)  {}
+    
     bool    operator>=( const DijkstraInfo_t& a) const{ return this->distance >= a.distance; }
     bool    operator> ( const DijkstraInfo_t& a) const{ return this->distance >  a.distance; }
     bool    operator<=( const DijkstraInfo_t& a) const{ return this->distance <= a.distance; }

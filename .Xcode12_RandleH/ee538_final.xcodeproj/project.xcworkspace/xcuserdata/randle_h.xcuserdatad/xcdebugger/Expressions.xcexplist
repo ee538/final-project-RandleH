@@ -20,9 +20,6 @@
                value = "cur.node">
             </PersistentString>
             <PersistentString
-               value = "table_visited">
-            </PersistentString>
-            <PersistentString
                value = "table_map">
             </PersistentString>
             <PersistentString
