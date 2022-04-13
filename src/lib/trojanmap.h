@@ -16,7 +16,7 @@
 #include <sstream>
 #include <climits>
 
-
+#include <set>
 // ========================================================================================================
 // Data Structure
 // ========================================================================================================
@@ -38,9 +38,33 @@ class Node {
 namespace rhqwq{
 // Data Structure
 typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
-typedef std::vector< NameNode_t >      V_NameNode_t;   // A vector contains a bunch of such combinations.
+typedef std::vector< NameNode_t >       V_NameNode_t;   // A vector contains a bunch of such combinations.
+typedef std::string NodeId_t;
+class DijkstraInfo_t{
+public:
+    NodeId_t  node;
+    NodeId_t  prev;
+    bool      visited;
+    double  distance;
+    DijkstraInfo_t(){}
+    DijkstraInfo_t( NodeId_t node_id            ):node(node_id),distance(INFINITY),visited(false){}
+    DijkstraInfo_t( NodeId_t node_id, double dis):node(node_id),distance(     dis),visited(false){}
+    DijkstraInfo_t( const DijkstraInfo_t& rhs ):node(rhs.node),distance(rhs.distance),visited(rhs.visited){
+    }
+    bool    operator>=( const DijkstraInfo_t& a) const{ return this->distance >= a.distance; }
+    bool    operator> ( const DijkstraInfo_t& a) const{ return this->distance >  a.distance; }
+    bool    operator<=( const DijkstraInfo_t& a) const{ return this->distance <= a.distance; }
+    bool    operator< ( const DijkstraInfo_t& a) const{ return this->distance <  a.distance; }
+    bool    operator==( const DijkstraInfo_t& a) const{ return this->distance == a.distance; }
+    double  operator- ( const DijkstraInfo_t& a) const{ return this->distance -  a.distance; }
+    
+};
+//typedef std::pair<std::string, rhqwq::DijkstraInfo_t>  ID_Dijkstra_t;
+//typedef std::map <std::string, rhqwq::DijkstraInfo_t> M_ID_Dijkstra_t;
 
 }
+
+extern double CalculateDistance_(const std::string &a, const std::string &b);
 
 // ========================================================================================================
 // Class Declaration
@@ -147,6 +171,9 @@ class TrojanMap {
 //private:
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
+    
+    
+    
 };
 
 #endif

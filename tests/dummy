@@ -1,0 +1,42 @@
+std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
+    std::string location1_name, std::string location2_name) {
+    std::vector<std::string> path;
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    
+    // Data Initilization
+    std::map< rhqwq::NodeId_t, rhqwq::DijkstraInfo_t> dijkstra;
+    std::set< rhqwq::NodeId_t >                       unVisited;
+    {
+        for( auto &i:data ){
+            dijkstra[ i.first ] = { i.first, INFINITY };
+            assert(unVisited.insert(i.first).second==true);
+        }
+        dijkstra[ root.id ].distance = 0.0;
+        dijkstra[ dst.id  ].distance = INFINITY;
+    }
+    
+    // Iterate until all the nodes are visited.
+    rhqwq::NodeId_t tmp = root.id;
+    while( !unVisited.empty() ){
+        rhqwq::NodeId_t nxt = "";
+        for( auto &i: data[tmp].neighbors ){
+            if( !unVisited.count(i) ) continue;
+            
+            double dis = CalculateDistance( tmp, i);
+            if( dis<dijkstra[i].distance ){
+                dijkstra[i].distance = dijkstra[tmp].distance + dis;
+                dijkstra[i].prev     = tmp;
+                nxt                  = tmp;
+            }
+        }
+        unVisited.erase(tmp);
+        tmp = nxt;
+    }
+    
+    // BackTracking
+    
+    
+    return path;
+}

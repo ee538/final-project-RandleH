@@ -9,8 +9,46 @@ using namespace std;
 #include "../../tests/rhqwq_test.hpp"
 
 
+double CalculateDistance_(const std::string &a, const std::string &b){
+    
+    int a_ = stoi(a);
+    int b_ = stoi(b);
+    
+    if( a_ > b_ ) std::swap( a_, b_);
+    switch(a_){
+        case 0:{
+            switch(b_){
+                case 1: return 3;
+                case 2: return 10;
+                case 5: return 1;
+                default: return INFINITY;
+            }
+        }
+        case 1:{
+            switch (b_) {
+                case 2: return 6;
+                case 3: return 1;
+                default: return INFINITY;
+            }
+        }
+        case 2: return 1;
+        case 3:{
+            switch(b_) {
+                case 4: return 1;
+                case 6: return 4;
+                default: return INFINITY;
+            }
+        }
+        case 5: return 1;
+        default: return INFINITY;
+    }
+}
+
 
 int main() {
+
+    
+    
     
     MapUI x;
 #ifdef NCURSES
@@ -20,6 +58,35 @@ int main() {
     x.PlotMap();
     x.PrintMenu();
 #endif
+    
+    
+    
+//    vector<int> a = {0,3,6,2,7,2,89};
+//
+//    std::make_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    std::pop_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    cout<< a.back() << endl;
+//    a.pop_back();
+//
+//    a.push_back(-1);
+//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    a.push_back(-2);
+//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    a.push_back(-3);
+//    std::push_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    std::pop_heap(a.begin(), a.end(), []( const int& a,const int &b ){return a>b;} );
+//
+//    cout<< a.back() << endl;
+    
+
+
+
+
 
     return 0;
 }

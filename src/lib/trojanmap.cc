@@ -30,7 +30,7 @@ static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list
     return std::make_pair( false, m );
 }
 
-void strip_(std::string& str){
+static void strip_(std::string& str){
     if (str.length() == 0) return;
 
     auto start_it = str.begin();
@@ -47,7 +47,6 @@ void strip_(std::string& str){
     auto end_pos   = end_it.base() - str.begin();
     str = (start_pos <= end_pos) ? std::string(start_it, end_it.base()) : "";
 }
-
 
 }
 
@@ -277,24 +276,87 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  * @param  {std::string} location2_name     : goal
  * @return {std::vector<std::string>}       : path
  */
+
+
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
     std::vector<std::string> path;
     
-//    location1_name = this->FindClosestName(location1_name);
-//    location2_name = this->FindClosestName(location2_name);
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
     
-//    Node *node1 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second);
-//    Node *node2 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second);
     
-//    std::vector< std::pair<std::string, double> > temp( data.size(), std::make_pair(<#_T1 &&__t1#>, <#_T2 &&__t2#>) );
+    // Data Initilization
+    std::map   <rhqwq::NodeId_t, rhqwq::DijkstraInfo_t*> table_map;
+    std::vector<rhqwq::DijkstraInfo_t > table;
+    std::vector<rhqwq::DijkstraInfo_t*> table_unvisited;
+    std::vector<rhqwq::DijkstraInfo_t*> table_visited;
+    {
+        for( auto &i:data){
+            if( i.first == root.id )
+                table.push_back( rhqwq::DijkstraInfo_t( root.id,      0.0 ) );
+            else
+                table.push_back( rhqwq::DijkstraInfo_t( i.first, INFINITY ) );
+        }
+        
+        auto *ptr = (&table.front());
+        for( size_t i=0; i<table.size(); ++i, ++ptr ){
+            assert( ptr );
+            table_map[ table[i].node ] = ptr;
+            table_unvisited.push_back(ptr);
+        }
+    }
+    
+    
+    
+    std::make_heap( table_unvisited.begin(), table_unvisited.end(),\
+        []( const rhqwq::DijkstraInfo_t* a, const rhqwq::DijkstraInfo_t* b){ return a->distance > b->distance; } );
+    
 
+    while( table_visited.size() < data.size() ){
+        std::pop_heap( table_unvisited.begin(), table_unvisited.end(), \
+        []( const rhqwq::DijkstraInfo_t* a, const rhqwq::DijkstraInfo_t* b){ return a->distance > b->distance; } );
+        
+        rhqwq::DijkstraInfo_t cur = *table_unvisited.back();
+        table_unvisited.pop_back();
+                
+        for( auto &i:data[ cur.node ].neighbors ){
+            if( table_map[i]->visited ) continue;
+            
+            double distance = CalculateDistance( cur.node, i );
+            if( cur.distance + distance < table_map[i]->distance ){
+                
+                
+                table_map[i]->distance = cur.distance + distance;
+                assert( !cur.node.empty() );
+                table_map[i]->prev     = cur.node;
+        
+                std::make_heap( table_unvisited.begin(), table_unvisited.end(),\
+                []( const rhqwq::DijkstraInfo_t* a, const rhqwq::DijkstraInfo_t* b){ return a->distance > b->distance; } );
+            }
+            
+        }
+
+        table_map[ cur.node ]->visited = true;
+        
+        
+        table_visited.push_back( table_map[ cur.node ] );
+        
+    }
     
     
-    //...//
     
+    // BackTracking
+    rhqwq::NodeId_t tmp = dst.id;
+    while( table_map[ tmp ]->node != root.id ){
+        path.push_back( tmp );
+        tmp = table_map[ tmp ]->prev;
+    }
+
     return path;
 }
+
+
 
 /**
  * CalculateShortestPath_Bellman_Ford: Given 2 locations, return the shortest path which is a
