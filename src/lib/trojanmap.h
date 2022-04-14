@@ -121,6 +121,8 @@ class TrojanMap {
   // on the shortest path.
   std::vector<std::string> CalculateShortestPath_Dijkstra(std::string location1_name,
                                                  std::string location2_name);
+    std::vector<std::string> CalculateShortestPath_Dijkstra_(std::string location1_name,
+                                                   std::string location2_name);
   std::vector<std::string> CalculateShortestPath_Bellman_Ford(std::string location1_name,
                                                  std::string location2_name);
 
@@ -171,7 +173,7 @@ class TrojanMap {
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
     
-    std::map    <rhqwq::NodeId_t, rhqwq::DijkstraInfo_t> m_id_dijkstra_;
+//    std::map    <rhqwq::NodeId_t, rhqwq::DijkstraInfo_t> m_id_dijkstra_;
     
 };
 

@@ -56,7 +56,7 @@ TrojanMap::TrojanMap(){
 
     // Added by RandleH and QWQ.
     for( auto &i : this->data){
-        m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
+//        m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
         
         if( i.second.name.empty()==false ){
             v_Name_node_.push_back( std::make_pair(                      i.second.name, &i.second) );
@@ -279,26 +279,35 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  * @return {std::vector<std::string>}       : path
  */
 
-
+#if 1 // 合并未访问节点
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
-    std::vector<std::string> path;
     
-    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
-    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
     
     // Data Initilization
     auto cmp = []( const rhqwq::DijkstraInfo_t&a, const rhqwq::DijkstraInfo_t&b){return a.distance>b.distance;};
-    std::priority_queue< rhqwq::DijkstraInfo_t, std::vector <rhqwq::DijkstraInfo_t>, decltype(cmp)>     table_unvisited_(cmp);
-
+    std::vector<rhqwq::DijkstraInfo_t> container;
+    container.reserve( data.size() );
+    std::priority_queue<rhqwq::DijkstraInfo_t, std::vector<rhqwq::DijkstraInfo_t>, decltype(cmp)>   table_unvisited_ (cmp, std::move(container));
+    
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t >                                   table_;
+    table_.reserve(data.size());
+    
+    
+//    std::priority_queue<rhqwq::DijkstraInfo_t, std::vector<rhqwq::DijkstraInfo_t>, decltype(cmp)> table_unvisited_ (cmp);
+    
     {
         for( auto &i:data){
-            
             if( i.first==root.id ){
-                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second );
+//                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second );
+                table_.insert( std::make_pair( i.first, rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second ) ) );
                 table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second ));
             }else{
-                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
+//                m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
+                table_.insert( std::make_pair( i.first, rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second ) ) );
                 table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second ));
             }
             
@@ -308,12 +317,12 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
 
     size_t visitedCnt = 0;
     while( visitedCnt < data.size() ){
-        auto &dij_cur = m_id_dijkstra_[ table_unvisited_.top().id ];
+        auto &dij_cur = table_[ table_unvisited_.top().id ];
         table_unvisited_.pop();
         assert( !dij_cur.id.empty() );
         
         for( auto &i:dij_cur.node->neighbors ){
-            rhqwq::DijkstraInfo_t &dij_neighbor = m_id_dijkstra_[i];
+            rhqwq::DijkstraInfo_t &dij_neighbor = table_[i];
             
             if( dij_neighbor.visited ) continue;
             
@@ -333,16 +342,101 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     }
     
     // BackTracking
-    
+    std::vector<std::string> path;
+    path.reserve(1024);
     auto tmp = dst.id;
-    while( m_id_dijkstra_[tmp].id != root.id ){
+    while( table_[tmp].id != root.id ){
         path.push_back(tmp);
-        tmp = m_id_dijkstra_[tmp].prev_id;
+        tmp = table_[tmp].prev_id;
     }
     path.push_back(root.id);
 
     return path;
 }
+#else // 分裂未访问节点
+std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
+    std::string location1_name, std::string location2_name) {
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    
+    // Data Initilization
+    auto cmp = []( const rhqwq::DijkstraInfo_t*a, const rhqwq::DijkstraInfo_t*b){return a->distance>b->distance;};
+//    std::priority_queue< rhqwq::DijkstraInfo_t*, std::vector <rhqwq::DijkstraInfo_t*>, decltype(cmp)>     table_unvisited_referenced_(cmp);
+    
+    std::vector<rhqwq::DijkstraInfo_t*> container;
+    container.reserve( data.size() );
+    std::priority_queue<rhqwq::DijkstraInfo_t*, std::vector<rhqwq::DijkstraInfo_t*>, decltype(cmp)> table_unvisited_referenced_    (cmp, std::move(container));
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t*>                                   table_unvisited_unreferenced_;
+    table_unvisited_unreferenced_.reserve(data.size());
+    
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t >                                   table_;
+    table_.reserve(data.size());
+    
+    {
+        for( auto &i:data){
+            if( i.first==root.id ){
+                table_.insert( std::make_pair(i.first, rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second )) );
+                table_unvisited_referenced_.push( &table_[ i.first ] );
+            }else{
+                table_.insert( std::make_pair(i.first, rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second )) );
+                table_unvisited_unreferenced_[ i.first ] = &table_[ i.first ];
+            }
+            
+        }
+    }
+    
+    size_t visitedCnt = 0;
+    while( visitedCnt < data.size() ){
+        auto &dij_cur = table_unvisited_referenced_.empty() ? *(table_unvisited_unreferenced_.begin()->second) : table_[ table_unvisited_referenced_.top()->id ];
+        
+        if( !table_unvisited_referenced_.empty() )
+            table_unvisited_referenced_.pop();
+         
+        assert( !dij_cur.id.empty() );
+        
+        for( auto &i:dij_cur.node->neighbors ){
+            rhqwq::DijkstraInfo_t &dij_neighbor = table_[i];
+            
+            if( dij_neighbor.visited ) continue;
+            
+            double distance = CalculateDistance( dij_cur.id, i );
+            if( dij_cur.distance + distance < dij_neighbor.distance ){
+
+                dij_neighbor.distance = dij_cur.distance + distance;
+                dij_neighbor.prev_id  = dij_cur.id;
+                
+                table_unvisited_referenced_.push(&dij_neighbor);
+                table_unvisited_unreferenced_.erase( dij_neighbor.id );
+            }
+            
+        }
+        dij_cur.visited = true;
+        
+        
+        ++visitedCnt;
+    }
+
+    
+    // BackTracking
+    std::vector<std::string> path;
+    
+    path.reserve(1024);
+    auto tmp = dst.id;
+    while( table_[tmp].id != root.id ){
+        path.push_back(tmp);
+        tmp = table_[tmp].prev_id;
+    }
+    path.push_back(root.id);
+
+    return path;
+}
+#endif
+
+
+
+
+
 
 
 
