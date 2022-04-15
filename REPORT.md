@@ -77,12 +77,13 @@ public:
 
 ### `rhqwq::DijkstraInfo_t` 	
 
-| Member | Type       | Initialization Value | Description |
-| ------ | ---------- | -------------------- | ----------- |
-| `id`   | `NodeId_t` | qwq                  | qwq         |
-| qwq    | qwq        | qwq                  | qwq         |
-| qwq    | qwq        | qwq                  | qwq         |
-|        |            |                      |             |
+| Member     | Type       | Initialization Value | Description                                       |
+| ---------- | :--------- | -------------------- | ------------------------------------------------- |
+| `id`       | `NodeId_t` | `nullptr`            | Represent the current node’s id                   |
+| `prev_id`  | `NodeId_t` | `nullptr`            | Represent the previous node’s id                  |
+| `*node`    | `Node`     | `nullptr`            | Pointer the content(lat,lon,id) in the class Node |
+| `visited`  | `bool`     | `false`              | To record the nodes that were been visited        |
+| `distance` | `double`   | `0.0`                | To record the distance between the nodes          |
 
 
 
@@ -101,19 +102,19 @@ public:
 
 ### `rhqwq::binary_search_`
 
-| Params | Attributes | Type  | Description |
-| ------ | :--------: | ----- | ----------- |
-| qwq    |    qwq     | `qwq` | qwq         |
-| qwq    |    qwq     | `qwq` | qwq         |
+| Params     | Attributes |               Type               | Description                        |
+| ---------- | :--------: | :------------------------------: | :--------------------------------- |
+| `list`     |  🟢 \|🔒\|®️  | `const vector<std::pair<T,N> >&` | Define a pair to store two strings |
+| `tar`      |  🟢 \|🔒\|®️  |            `const T&`            | The input string that we type      |
+| `$return$` |     🔴      |        `std::make_pair()`        | The input(if exists), otherwise -1 |
 
 
 
 ### `rhqwq::strip_`
 
-| Params | Attributes | Type  | Description |
-| ------ | :--------: | ----- | ----------- |
-| qwq    |    qwq     | `qwq` | qwq         |
-| qwq    |    qwq     | `qwq` | qwq         |
+| Params | Attributes | Type                                           | Description                  |
+| :----- | :--------: | ---------------------------------------------- | ---------------------------- |
+| `str`  |  🟢 \|🔒\|®️  | `**static** **void** strip_(std::string& str)` | Strip the blank in the input |
 
 
 
@@ -169,37 +170,9 @@ static void strip_(std::string& str){
 
 
 
+　<h1>填完了</h1>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 把上面填了吧 求求了 by RandleH
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+　
 
 
 

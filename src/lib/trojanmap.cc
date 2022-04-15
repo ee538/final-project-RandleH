@@ -185,7 +185,7 @@ int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
  */
 std::string TrojanMap::FindClosestName(std::string name) {
     
-#if 1 // Distance order
+#if 0 // Distance order
     name = rhqwq::tolowercase_(name);
 
     int min = INT_MAX;
@@ -279,7 +279,7 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  * @return {std::vector<std::string>}       : path
  */
 
-#if 1 // 合并未访问节点
+#if 0 // 合并未访问节点
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
     
