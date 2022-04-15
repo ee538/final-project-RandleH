@@ -79,11 +79,11 @@ public:
 
 | Member     | Type       | Initialization Value | Description                                       |
 | ---------- | :--------- | -------------------- | ------------------------------------------------- |
-| `id`       | `NodeId_t` | `nullptr`            | Represent the current node’s id                   |
-| `prev_id`  | `NodeId_t` | `nullptr`            | Represent the previous node’s id                  |
+| `id`       | `NodeId_t` | `data(id)`           | Represent the current node’s id                   |
+| `prev_id`  | `NodeId_t` | `data(id)`           | Represent the previous node’s id                  |
 | `*node`    | `Node`     | `nullptr`            | Pointer the content(lat,lon,id) in the class Node |
 | `visited`  | `bool`     | `false`              | To record the nodes that were been visited        |
-| `distance` | `double`   | `0.0`                | To record the distance between the nodes          |
+| `distance` | `double`   | `INFINITY`           | To record the distance between the nodes          |
 
 
 
@@ -106,15 +106,15 @@ public:
 | ---------- | :--------: | :------------------------------: | :--------------------------------- |
 | `list`     |  🟢 \|🔒\|®️  | `const vector<std::pair<T,N> >&` | Define a pair to store two strings |
 | `tar`      |  🟢 \|🔒\|®️  |            `const T&`            | The input string that we type      |
-| `$return$` |     🔴      |        `std::make_pair()`        | The input(if exists), otherwise -1 |
+| `$return$` |     🔴      |       `std::pair<bool,id>`       | The input(if exists), otherwise -1 |
 
 
 
 ### `rhqwq::strip_`
 
-| Params | Attributes | Type                                           | Description                  |
-| :----- | :--------: | ---------------------------------------------- | ---------------------------- |
-| `str`  |  🟢 \|🔒\|®️  | `**static** **void** strip_(std::string& str)` | Strip the blank in the input |
+| Params | Attributes | Type                                   | Description                  |
+| :----- | :--------: | -------------------------------------- | ---------------------------- |
+| `str`  |  🟢 \|🔒\|®️  | `static void strip_(std::string& str)` | Strip the space in the input |
 
 
 
