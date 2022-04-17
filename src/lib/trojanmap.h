@@ -40,31 +40,29 @@ namespace rhqwq{
 typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
 typedef std::vector< NameNode_t >       V_NameNode_t;   // A vector contains a bunch of such combinations.
 typedef std::string NodeId_t;
-class DijkstraInfo_t{
-public:
-    NodeId_t  id;
-    NodeId_t  prev_id;
-    Node     *node;
-    bool      visited;
-    double    distance;
-    DijkstraInfo_t(){}
-    DijkstraInfo_t( NodeId_t node_id                         ) :id(node_id),distance(INFINITY)    ,visited(false)       ,node(nullptr ){}
-    DijkstraInfo_t( NodeId_t node_id, double dis, Node* node ) :id(node_id),distance(     dis)    ,visited(false)       ,node(node    ){}
-    DijkstraInfo_t( const DijkstraInfo_t& rhs                ) :id(rhs.id) ,distance(rhs.distance),visited(rhs.visited) ,node(rhs.node){}
-        
-};
+
+
 
 class BellmanInfo_t{
 public:
     NodeId_t  id;
     NodeId_t  prev_id;
     Node     *node;
-    bool     isvisited;
     double   distance;
     BellmanInfo_t(){}
-    BellmanInfo_t( NodeId_t node_id, Node* node, double dis) :id(node_id),node(node),distance(dis),isvisited(false){};
+    BellmanInfo_t( NodeId_t node_id, double dis, Node* node) :id(node_id),node(node),distance(dis){};
     
 };
+
+
+class DijkstraInfo_t : public BellmanInfo_t{
+public:
+    bool      visited;
+    DijkstraInfo_t(){}
+    DijkstraInfo_t( NodeId_t node_id, double dis, Node* node ) :visited(false), BellmanInfo_t(node_id,dis,node) {}
+        
+};
+
 
 }
 
