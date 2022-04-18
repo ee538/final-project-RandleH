@@ -172,7 +172,7 @@ class TrojanMap {
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
   //----------------------------------------------------- User-defined functions
-  
+  void Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &has_cycle, std::vector<double> &square);
 //private:
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.

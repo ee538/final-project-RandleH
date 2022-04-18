@@ -142,12 +142,12 @@ int main() {
 //        "2753199985","6820935907","1837212100","4015372458","6813411588","1837212101","6814916516",
 //        "6814916515","6820935910","4547476733"};
     
-    size_t cnt=10;
-    while( cnt-- ){
-        RH_RECORD_TIME( tmap.CalculateShortestPath_Dijkstra( "Dulce", "Arco" ), printf);
-        printf("        ");
-        RH_RECORD_TIME( tmap.CalculateShortestPath_Bellman_Ford( "Dulce", "Arco"), printf);
-    }
+//    size_t cnt=10;
+//    while( cnt-- ){
+//        RH_RECORD_TIME( tmap.CalculateShortestPath_Dijkstra( "Dulce", "Arco" ), printf);
+//        printf("        ");
+//        RH_RECORD_TIME( tmap.CalculateShortestPath_Bellman_Ford( "Dulce", "Arco"), printf);
+//    }
 
 
 //    cout <<"========================="<<endl;

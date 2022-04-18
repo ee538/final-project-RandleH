@@ -555,6 +555,9 @@ std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &l
  * @return {bool}                      : in square or not
  */
 bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
+    if(GetLon(id)>=square[0] && GetLon(id)<=square[1] && GetLat(id)<=square[2] && GetLat(id)>=square[3]){
+        return true;
+    }
   return false;
 }
 
@@ -567,6 +570,15 @@ bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
 std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
   // include all the nodes in subgraph
   std::vector<std::string> subgraph;
+    double left_lon = square[0];
+    double right_lon = square[1];
+    double upper_lat = square[2];
+    double lower_lat = square[3];
+    for(auto it = data.begin(); it != data.end(); ++it){
+        if(it->second.lon >= left_lon && it->second.lon <= right_lon && it->second.lat <= upper_lat && it->second.lat >= lower_lat){
+            subgraph.push_back(it->first);
+        }
+    }
   return subgraph;
 }
 
@@ -579,9 +591,38 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * @return {bool}: whether there is a cycle or not
  */
 bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+    std::unordered_map<std::string, int> check;
+    for(auto i = 0; i<subgraph.size(); i++){
+        std::string root = subgraph[i];
+        std::string root_parent = root;
+        bool iscycle = false;
+        for(auto i : subgraph){
+            check[i] = 0;
+        }
+        Cycle_helper(root, root_parent, check, iscycle, square);
+        if(iscycle){
+            return true;
+        }
+    }
   return false;
 }
-
+void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &iscycle, std::vector<double> &square){
+    if(inSquare(root , square)){
+        if(check[root] == 1){
+            iscycle = true;
+            return;
+        }
+        check[root] = 1;
+    }
+    else{
+        return;
+    }
+    for(auto i : GetNeighborIDs(root)){
+        if(root_parent != i){
+            Cycle_helper(i, root, check, iscycle, square);
+        }
+    }
+}
 /**
  * FindNearby: Given a class name C, a location name L and a number r, 
  * find all locations in class C on the map near L with the range of r and return a vector of string ids
