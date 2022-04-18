@@ -529,8 +529,37 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
  * @return {std::vector<std::vector<std::string>>} : dependencies
  */
 std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std::string dependencies_filename){
-  std::vector<std::vector<std::string>> dependencies_from_csv;
-  return dependencies_from_csv;
+    std::vector<std::vector<std::string>> dependencies_from_csv;
+    
+    std::fstream fin;
+    fin.open( dependencies_filename, std::ios::in);
+    std::string line, word;
+    assert(fin.is_open());
+    getline(fin, line);
+    while (getline(fin, line)) {
+        std::stringstream s(line);
+        
+        int count = 0;
+        std::vector<std::string> tmp;
+        while (getline(s, word, ',')) {
+            word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
+                
+            if (count == 0){ // Source
+                tmp.push_back(word);
+            }else { // Destination
+                tmp.push_back(word);
+            }
+            count++;
+        }
+        dependencies_from_csv.push_back(tmp);
+  }
+  fin.close();
+    
+    
+    return dependencies_from_csv;
 }
 
 /**
@@ -541,10 +570,56 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
  * @param  {std::vector<std::vector<std::string>>} dependencies     : prerequisites
  * @return {std::vector<std::string>} results                       : results
  */
-std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
-                                                     std::vector<std::vector<std::string>> &dependencies){
-  std::vector<std::string> result;
-  return result;                                                     
+std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &V,
+                                                     std::vector<std::vector<std::string>> &E){
+    std::vector<std::string> res;
+    
+    struct Info_t{
+        size_t              n_Incom;
+        vector<std::string> neighbors;
+        Info_t():n_Incom(0){}
+    };
+    
+#define src 0
+#define dst 1
+    std::map<std::string, Info_t> table_;
+    {
+     /* Initialization */                          for( auto &i : V ){
+     /* Initialization */                              table_.insert(std::make_pair(i, Info_t()));
+     /* Initialization */                          }
+     /* Initialization */                          for( auto &e : E ){
+     /* Initialization */                              table_[ e[dst] ].n_Incom++;
+     /* Initialization */                              table_[ e[src] ].neighbors.push_back( e[dst] );
+     /* Initialization */                          }
+    }
+    
+    std::queue< rhqwq::NodeId_t > no_incom_edge;
+    {
+    /* Initialization */                           for( auto &i : V ){
+    /* Initialization */                               if( table_[i].n_Incom==0 ){
+    /* Initialization */                                   no_incom_edge.push(i);
+    /* Initialization */                               }
+    /* Initialization */                           }
+    }
+    
+    while (!no_incom_edge.empty()){
+        auto i = no_incom_edge.front(); no_incom_edge.pop();
+        res.push_back(i);
+        for( auto &s : table_[ i ].neighbors ){
+            --table_[s].n_Incom;
+            if( table_[s].n_Incom==0 )
+                no_incom_edge.push(s);
+        }
+        
+    }
+    
+    if( res.size()!= V.size() )
+        return std::vector<std::string>();
+    
+    return res;
+    
+#undef src
+#undef dst
 }
 
 /**
