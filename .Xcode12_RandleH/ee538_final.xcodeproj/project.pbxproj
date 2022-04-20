@@ -149,7 +149,7 @@
 		E35E555C27F7B41B002EBAE3 /* ee538_final */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ee538_final; sourceTree = BUILT_PRODUCTS_DIR; };
 		E35E556B27F7B4D3002EBAE3 /* ui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ui.cc; path = ../src/lib/ui.cc; sourceTree = "<group>"; };
 		E35E556C27F7B4D3002EBAE3 /* mapui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mapui.h; path = ../src/lib/mapui.h; sourceTree = "<group>"; };
-		E35E556D27F7B4D3002EBAE3 /* trojanmap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = trojanmap.cc; path = ../src/lib/trojanmap.cc; sourceTree = "<group>"; };
+		E35E556D27F7B4D3002EBAE3 /* trojanmap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = trojanmap.cc; path = ../src/lib/trojanmap.cc; sourceTree = "<group>"; wrapsLines = 0; };
 		E35E556E27F7B4D3002EBAE3 /* trojanmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trojanmap.h; path = ../src/lib/trojanmap.h; sourceTree = "<group>"; };
 		E35E556F27F7B4D3002EBAE3 /* BUILD */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BUILD; path = ../src/lib/BUILD; sourceTree = "<group>"; };
 		E35E557027F7B4D4002EBAE3 /* mapui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mapui.cc; path = ../src/lib/mapui.cc; sourceTree = "<group>"; };

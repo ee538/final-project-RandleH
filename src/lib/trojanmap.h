@@ -16,7 +16,7 @@
 #include <sstream>
 #include <climits>
 
-
+#include <set>
 // ========================================================================================================
 // Data Structure
 // ========================================================================================================
@@ -38,9 +38,35 @@ class Node {
 namespace rhqwq{
 // Data Structure
 typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
-typedef std::vector< NameNode_t >      V_NameNode_t;   // A vector contains a bunch of such combinations.
+typedef std::vector< NameNode_t >       V_NameNode_t;   // A vector contains a bunch of such combinations.
+typedef std::string NodeId_t;
+
+
+
+class BellmanInfo_t{
+public:
+    NodeId_t  id;
+    NodeId_t  prev_id;
+    Node     *node;
+    double   distance;
+    BellmanInfo_t(){}
+    BellmanInfo_t( NodeId_t node_id, double dis, Node* node) :id(node_id),node(node),distance(dis){};
+    
+};
+
+
+class DijkstraInfo_t : public BellmanInfo_t{
+public:
+    bool      visited;
+    DijkstraInfo_t(){}
+    DijkstraInfo_t( NodeId_t node_id, double dis, Node* node ) :visited(false), BellmanInfo_t(node_id,dis,node) {}
+        
+};
+
 
 }
+
+extern double CalculateDistance_(const std::string &a, const std::string &b);
 
 // ========================================================================================================
 // Class Declaration
@@ -98,6 +124,9 @@ class TrojanMap {
   // on the shortest path.
   std::vector<std::string> CalculateShortestPath_Dijkstra(std::string location1_name,
                                                  std::string location2_name);
+    
+    
+  double Bellman_Ford_helper_( const Node &prev, const Node &root, const Node &dst, std::unordered_map<rhqwq::NodeId_t, rhqwq::BellmanInfo_t> &memo );
   std::vector<std::string> CalculateShortestPath_Bellman_Ford(std::string location1_name,
                                                  std::string location2_name);
 
@@ -143,10 +172,21 @@ class TrojanMap {
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
   //----------------------------------------------------- User-defined functions
-  
+  void Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &has_cycle, std::vector<double> &square);
 //private:
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
+    
+    bool relax_( const rhqwq::BellmanInfo_t &info_current, rhqwq::BellmanInfo_t &info_neighbor ){
+        double distance = info_current.distance + CalculateDistance( info_current.id, info_neighbor.id );
+        if( distance < info_neighbor.distance ){
+            info_neighbor.distance = distance;
+            info_neighbor.prev_id  = info_current.id;
+            return true;
+        }
+        return false;
+    }
+    
 };
 
 #endif

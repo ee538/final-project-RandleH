@@ -1,0 +1,157 @@
+std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
+    std::string location1_name, std::string location2_name) {
+    std::vector<std::string> path;
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    
+    // Data Initilization
+    std::map< rhqwq::NodeId_t, rhqwq::DijkstraInfo_t> dijkstra;
+    std::set< rhqwq::NodeId_t >                       unVisited;
+    {
+        for( auto &i:data ){
+            dijkstra[ i.first ] = { i.first, INFINITY };
+            assert(unVisited.insert(i.first).second==true);
+        }
+        dijkstra[ root.id ].distance = 0.0;
+        dijkstra[ dst.id  ].distance = INFINITY;
+    }
+    
+    // Iterate until all the nodes are visited.
+    rhqwq::NodeId_t tmp = root.id;
+    while( !unVisited.empty() ){
+        rhqwq::NodeId_t nxt = "";
+        for( auto &i: data[tmp].neighbors ){
+            if( !unVisited.count(i) ) continue;
+            
+            double dis = CalculateDistance( tmp, i);
+            if( dis<dijkstra[i].distance ){
+                dijkstra[i].distance = dijkstra[tmp].distance + dis;
+                dijkstra[i].prev     = tmp;
+                nxt                  = tmp;
+            }
+        }
+        unVisited.erase(tmp);
+        tmp = nxt;
+    }
+    
+    // BackTracking
+    
+    
+    return path;
+}
+
+
+
+
+    Node &root = data[location1_name];
+    Node &dst  = data[location2_name];
+    
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::BellmanInfo_t >                                   table_;
+    table_.reserve(data.size());
+    {
+        for( auto&i:data ){
+            if( i.first == root.id )
+                table_.insert(std::make_pair( i.first, rhqwq::BellmanInfo_t( i.first, &i.second,      0.0) ));
+            else
+                table_.insert(std::make_pair( i.first, rhqwq::BellmanInfo_t( i.first, &i.second, INFINITY) ));
+        }
+    }
+    
+    for( auto&i:table_ ){
+        for( auto &j:i.second.node->neighbors ){
+            rhqwq::BellmanInfo_t &neighbor = table_[j];
+            double                distance = CalculateDistance_( i.first, data[j].id );
+            
+            if( distance < neighbor.distance ){
+                neighbor.distance = distance;
+                neighbor.prev_id  = i.first;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
+    std::string location1_name, std::string location2_name){
+    
+#if 0
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+#else
+    Node &root = data[ location1_name ];
+    Node &dst  = data[ location2_name ];
+#endif
+    
+    std::unordered_map< rhqwq::NodeId_t, rhqwq::BellmanInfo_t> table_;
+    
+    for( auto &i : data ){
+        table_.insert(std::make_pair( i.first, rhqwq::BellmanInfo_t( i.first, &i.second, INFINITY)) );
+    }
+    table_[root.id].distance = 0.0;
+    assert( table_.size()==data.size() );
+    
+    bool updated = false;
+    vector<rhqwq::NodeId_t> updated_id;
+    do{
+        updated= false;
+        
+        for( auto &i:table_ ){
+            if( i.second.distance==INFINITY ){continue;}
+            
+            for( auto &j : i.second.node->neighbors ){
+                updated |= relax_( i.second, table_[j]);
+                if( updated ){
+                    updated_id.push_back( j );
+                    //...//
+                }
+            }
+            
+        }
+    }while( updated );
+    
+    std::vector<std::string> path;
+    auto tmp = dst.id;
+    while( table_[tmp].id != root.id ){
+        path.push_back(tmp);
+        tmp = table_[tmp].prev_id;
+    }
+    path.push_back(root.id);
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+
+
+
+
+    bool updated = false;
+    vector<rhqwq::NodeId_t> updated_id = {root.id};
+    do{
+        updated= false;
+        
+        vector<rhqwq::NodeId_t> tmp_id;
+        
+        for( auto &i:updated_id ){
+            if( table_[i].distance==INFINITY ){continue;}
+            
+            for( auto &j : data[i].neighbors ){
+                updated |= relax_( table_[i], table_[j]);
+                if( updated ){
+                    tmp_id.push_back( j );
+                    //...//
+                }
+            }
+            
+        }
+        updated_id.assign(tmp_id.begin(), tmp_id.end());
+    }while( updated );
+

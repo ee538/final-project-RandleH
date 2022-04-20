@@ -30,7 +30,7 @@ static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list
     return std::make_pair( false, m );
 }
 
-void strip_(std::string& str){
+static void strip_(std::string& str){
     if (str.length() == 0) return;
 
     auto start_it = str.begin();
@@ -49,6 +49,10 @@ void strip_(std::string& str){
 }
 
 
+
+
+
+
 }
 
 
@@ -57,6 +61,7 @@ TrojanMap::TrojanMap(){
 
     // Added by RandleH and QWQ.
     for( auto &i : this->data){
+//        m_id_dijkstra_[ i.first ] = rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second );
         
         if( i.second.name.empty()==false ){
             v_Name_node_.push_back( std::make_pair(                      i.second.name, &i.second) );
@@ -64,9 +69,10 @@ TrojanMap::TrojanMap(){
         }
     }
     std::stable_sort( v_Name_node_.begin(), v_Name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return (a.first)<(b.first);} );
-    
-    
+
     std::stable_sort( v_name_node_.begin(), v_name_node_.end(), [](const rhqwq::NameNode_t &a,const rhqwq::NameNode_t &b){ return rhqwq::tolowercase_(a.first) < rhqwq::tolowercase_(b.first);} );
+    
+    
     
 };
 
@@ -184,7 +190,7 @@ int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
  */
 std::string TrojanMap::FindClosestName(std::string name) {
     
-#if 1 // Distance order
+#if 0 // Distance order
     name = rhqwq::tolowercase_(name);
 
     int min = INT_MAX;
@@ -277,24 +283,154 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  * @param  {std::string} location2_name     : goal
  * @return {std::vector<std::string>}       : path
  */
+
+#if 1 // 合并未访问节点
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
-    std::vector<std::string> path;
     
-//    location1_name = this->FindClosestName(location1_name);
-//    location2_name = this->FindClosestName(location2_name);
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
     
-//    Node *node1 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second);
-//    Node *node2 = (this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second);
+    // Data Initilization
+    auto cmp = []( const rhqwq::DijkstraInfo_t&a, const rhqwq::DijkstraInfo_t&b){return a.distance>b.distance;};
+    std::vector<rhqwq::DijkstraInfo_t> container;
+    container.reserve( data.size() );
+    std::priority_queue<rhqwq::DijkstraInfo_t, std::vector<rhqwq::DijkstraInfo_t>, decltype(cmp)>   table_unvisited_(cmp, std::move(container));
     
-//    std::vector< std::pair<std::string, double> > temp( data.size(), std::make_pair(<#_T1 &&__t1#>, <#_T2 &&__t2#>) );
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t >                                   table_;
+    table_.reserve(data.size());
+    
+    {
+        for( auto &i:data){
+            if( i.first==root.id ){
+                table_.insert( std::make_pair( i.first, rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second ) ) );
+                table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second ));
+            }else{
+                table_.insert( std::make_pair( i.first, rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second ) ) );
+                table_unvisited_.push( rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second ));
+            }
+            
+        }
 
+    }
+
+    size_t visitedCnt = 0;
+    while( visitedCnt < data.size() ){
+        auto &dij_cur = table_[ table_unvisited_.top().id ];
+        table_unvisited_.pop();
+        assert( !dij_cur.id.empty() );
+        
+        for( auto &i:dij_cur.node->neighbors ){
+            rhqwq::DijkstraInfo_t &dij_neighbor = table_[i];
+            
+            if( dij_neighbor.visited ) continue;
+            
+            double distance = CalculateDistance( dij_cur.id, i );
+            if( dij_cur.distance + distance < dij_neighbor.distance ){
+                // 查找 pNeighbor在数组中的位置
+                dij_neighbor.distance = dij_cur.distance + distance;
+                dij_neighbor.prev_id  = dij_cur.id;
+                
+                table_unvisited_.push(dij_neighbor);
+
+            }
+            
+        }
+        dij_cur.visited = true;
+        ++visitedCnt;
+    }
     
+    // Collect result
+    std::vector<std::string> path;
+    path.reserve(1024);
+    auto tmp = dst.id;
+    while( tmp != root.id ){
+        path.push_back(tmp);
+        tmp = table_[tmp].prev_id;
+    }
+    path.push_back(root.id);
     
-    //...//
-    
+    std::reverse(path.begin(), path.end());
     return path;
 }
+#else // 分裂未访问节点
+std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
+    std::string location1_name, std::string location2_name) {
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    
+    // Data Initilization
+    auto cmp = []( const rhqwq::DijkstraInfo_t*a, const rhqwq::DijkstraInfo_t*b){return a->distance>b->distance;};
+    std::vector<rhqwq::DijkstraInfo_t*> container;
+    container.reserve( data.size() );
+    std::priority_queue<rhqwq::DijkstraInfo_t*, std::vector<rhqwq::DijkstraInfo_t*>, decltype(cmp)> table_unvisited_referenced_    (cmp, std::move(container));
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t*>                                   table_unvisited_unreferenced_;
+    table_unvisited_unreferenced_.reserve(data.size());
+    
+    std::unordered_map < rhqwq::NodeId_t, rhqwq::DijkstraInfo_t >                                   table_;
+    table_.reserve(data.size());
+    
+    {
+        for( auto &i:data){
+            if( i.first==root.id ){
+                table_.insert( std::make_pair(i.first, rhqwq::DijkstraInfo_t( i.first, 0.0, &i.second )) );
+                table_unvisited_referenced_.push( &table_[ i.first ] );
+            }else{
+                table_.insert( std::make_pair(i.first, rhqwq::DijkstraInfo_t( i.first, INFINITY, &i.second )) );
+                table_unvisited_unreferenced_[ i.first ] = &table_[ i.first ];
+            }
+            
+        }
+    }
+    
+    size_t visitedCnt = 0;
+    while( visitedCnt < data.size() ){
+        auto &dij_cur = table_unvisited_referenced_.empty() ? *(table_unvisited_unreferenced_.begin()->second) : table_[ table_unvisited_referenced_.top()->id ];
+        
+        if( !table_unvisited_referenced_.empty() )
+            table_unvisited_referenced_.pop();
+         
+        assert( !dij_cur.id.empty() );
+        
+        for( auto &i:dij_cur.node->neighbors ){
+            rhqwq::DijkstraInfo_t &dij_neighbor = table_[i];
+            
+            if( dij_neighbor.visited ) continue;
+            
+            double distance = CalculateDistance( dij_cur.id, i );
+            if( dij_cur.distance + distance < dij_neighbor.distance ){
+
+                dij_neighbor.distance = dij_cur.distance + distance;
+                dij_neighbor.prev_id  = dij_cur.id;
+                
+                table_unvisited_referenced_.push(&dij_neighbor);
+                table_unvisited_unreferenced_.erase( dij_neighbor.id );
+            }
+            
+        }
+        dij_cur.visited = true;
+        
+        
+        ++visitedCnt;
+    }
+
+    
+    // BackTracking
+    std::vector<std::string> path;
+    
+    path.reserve(1024);
+    auto tmp = dst.id;
+    while( tmp != root.id ){
+        path.push_back(tmp);
+        tmp = table_[tmp].prev_id;
+    }
+    path.push_back(root.id);
+
+    return path;
+}
+#endif
+
 
 /**
  * CalculateShortestPath_Bellman_Ford: Given 2 locations, return the shortest path which is a
@@ -304,17 +440,49 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
  * @param  {std::string} location2_name     : goal
  * @return {std::vector<std::string>}       : path
  */
+
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name){
+
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location1_name).second ].second;
+    Node &dst  = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, location2_name).second ].second;
+
+    std::unordered_map< rhqwq::NodeId_t, rhqwq::BellmanInfo_t> table_;
+    {
+        /* Initialization */                        for( auto &i : data ){
+        /* Initialization */                            table_.insert(std::make_pair( i.first, rhqwq::BellmanInfo_t( i.first, INFINITY, &i.second)) );
+        /* Initialization */                        }
+        /* Initialization */                        table_[root.id].distance = 0.0;
+        /* Initialization */                        assert( table_.size()==data.size() );
+    }
+
+    queue<rhqwq::NodeId_t> id_updated;
+    id_updated.push(root.id);
+
+    while( !id_updated.empty() ){
+
+        auto & table_i = table_[ id_updated.front() ];   id_updated.pop();
+//        assert( table_i.distance!=INFINITY );
+        
+        for( auto &j : table_i.node->neighbors ){
+            if( relax_( table_i, table_[j]) )
+                id_updated.push(j);
+        }
+        
+    }
+
     
     std::vector<std::string> path;
-    location1_name = this->FindClosestName(location1_name);
-    location2_name = this->FindClosestName(location2_name);
-    
-    
-    
+    auto tmp = dst.id;
+    while( tmp != root.id ){
+        path.push_back(tmp);
+        tmp = table_[tmp].prev_id;
+    }
+    path.push_back(root.id);
+    std::reverse(path.begin(), path.end());
     return path;
 }
+
 
 /**
  * Travelling salesman problem: Given a list of locations, return the shortest
@@ -361,8 +529,37 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
  * @return {std::vector<std::vector<std::string>>} : dependencies
  */
 std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std::string dependencies_filename){
-  std::vector<std::vector<std::string>> dependencies_from_csv;
-  return dependencies_from_csv;
+    std::vector<std::vector<std::string>> dependencies_from_csv;
+    
+    std::fstream fin;
+    fin.open( dependencies_filename, std::ios::in);
+    std::string line, word;
+    assert(fin.is_open());
+    getline(fin, line);
+    while (getline(fin, line)) {
+        std::stringstream s(line);
+        
+        int count = 0;
+        std::vector<std::string> tmp;
+        while (getline(s, word, ',')) {
+            word.erase(std::remove(word.begin(), word.end(), '\''), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '"'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '{'), word.end());
+            word.erase(std::remove(word.begin(), word.end(), '}'), word.end());
+                
+            if (count == 0){ // Source
+                tmp.push_back(word);
+            }else { // Destination
+                tmp.push_back(word);
+            }
+            count++;
+        }
+        dependencies_from_csv.push_back(tmp);
+  }
+  fin.close();
+    
+    
+    return dependencies_from_csv;
 }
 
 /**
@@ -373,10 +570,56 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
  * @param  {std::vector<std::vector<std::string>>} dependencies     : prerequisites
  * @return {std::vector<std::string>} results                       : results
  */
-std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
-                                                     std::vector<std::vector<std::string>> &dependencies){
-  std::vector<std::string> result;
-  return result;                                                     
+std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &V,
+                                                     std::vector<std::vector<std::string>> &E){
+    std::vector<std::string> res;
+    
+    struct Info_t{
+        size_t              n_Incom;
+        vector<std::string> neighbors;
+        Info_t():n_Incom(0){}
+    };
+    
+#define src 0
+#define dst 1
+    std::map<std::string, Info_t> table_;
+    {
+     /* Initialization */                          for( auto &i : V ){
+     /* Initialization */                              table_.insert(std::make_pair(i, Info_t()));
+     /* Initialization */                          }
+     /* Initialization */                          for( auto &e : E ){
+     /* Initialization */                              table_[ e[dst] ].n_Incom++;
+     /* Initialization */                              table_[ e[src] ].neighbors.push_back( e[dst] );
+     /* Initialization */                          }
+    }
+    
+    std::queue< rhqwq::NodeId_t > no_incom_edge;
+    {
+    /* Initialization */                           for( auto &i : V ){
+    /* Initialization */                               if( table_[i].n_Incom==0 ){
+    /* Initialization */                                   no_incom_edge.push(i);
+    /* Initialization */                               }
+    /* Initialization */                           }
+    }
+    
+    while (!no_incom_edge.empty()){
+        auto i = no_incom_edge.front(); no_incom_edge.pop();
+        res.push_back(i);
+        for( auto &s : table_[ i ].neighbors ){
+            --table_[s].n_Incom;
+            if( table_[s].n_Incom==0 )
+                no_incom_edge.push(s);
+        }
+        
+    }
+    
+    if( res.size()!= V.size() )
+        return std::vector<std::string>();
+    
+    return res;
+    
+#undef src
+#undef dst
 }
 
 /**
@@ -387,6 +630,9 @@ std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &l
  * @return {bool}                      : in square or not
  */
 bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
+    if(GetLon(id)>=square[0] && GetLon(id)<=square[1] && GetLat(id)<=square[2] && GetLat(id)>=square[3]){
+        return true;
+    }
   return false;
 }
 
@@ -399,6 +645,15 @@ bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
 std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
   // include all the nodes in subgraph
   std::vector<std::string> subgraph;
+    double left_lon = square[0];
+    double right_lon = square[1];
+    double upper_lat = square[2];
+    double lower_lat = square[3];
+    for(auto it = data.begin(); it != data.end(); ++it){
+        if(it->second.lon >= left_lon && it->second.lon <= right_lon && it->second.lat <= upper_lat && it->second.lat >= lower_lat){
+            subgraph.push_back(it->first);
+        }
+    }
   return subgraph;
 }
 
@@ -411,9 +666,38 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * @return {bool}: whether there is a cycle or not
  */
 bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+    std::unordered_map<std::string, int> check;
+    for(auto i = 0; i<subgraph.size(); i++){
+        std::string root = subgraph[i];
+        std::string root_parent = root;
+        bool iscycle = false;
+        for(auto i : subgraph){
+            check[i] = 0;
+        }
+        Cycle_helper(root, root_parent, check, iscycle, square);
+        if(iscycle){
+            return true;
+        }
+    }
   return false;
 }
-
+void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &iscycle, std::vector<double> &square){
+    if(inSquare(root , square)){
+        if(check[root] == 1){
+            iscycle = true;
+            return;
+        }
+        check[root] = 1;
+    }
+    else{
+        return;
+    }
+    for(auto i : GetNeighborIDs(root)){
+        if(root_parent != i){
+            Cycle_helper(i, root, check, iscycle, square);
+        }
+    }
+}
 /**
  * FindNearby: Given a class name C, a location name L and a number r, 
  * find all locations in class C on the map near L with the range of r and return a vector of string ids

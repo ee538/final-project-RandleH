@@ -13,5 +13,22 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "TrojanMap::CalculateShortestPath_Dijkstra(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;):trojanmap.cc">
+         <PersistentStrings>
+            <PersistentString
+               value = "cur.node">
+            </PersistentString>
+            <PersistentString
+               value = "table_map">
+            </PersistentString>
+            <PersistentString
+               value = "table">
+            </PersistentString>
+            <PersistentString
+               value = "table_unvisited">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>
