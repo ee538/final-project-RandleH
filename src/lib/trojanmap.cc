@@ -190,7 +190,7 @@ int TrojanMap::CalculateEditDistance(std::string w1, std::string w2){
  */
 std::string TrojanMap::FindClosestName(std::string name) {
     
-#if 0 // Distance order
+#if 1 // Distance order
     name = rhqwq::tolowercase_(name);
 
     int min = INT_MAX;
@@ -662,41 +662,50 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * is a cycle path inside the square, false otherwise.
  * 
  * @param {std::vector<std::string>} subgraph: list of location ids in the square
- * @param {std::vector<double>} square: four vertexes of the square area
+ * @param {std::vector<double>} square: four vertexes of the square area  lon_L, lon_R, lat_N, lat_S
  * @return {bool}: whether there is a cycle or not
  */
 bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
-    std::unordered_map<std::string, int> check;
-    for(auto i = 0; i<subgraph.size(); i++){
-        std::string root = subgraph[i];
-        std::string root_parent = root;
-        bool iscycle = false;
-        for(auto i : subgraph){
-            check[i] = 0;
+    std::unordered_map<std::string, bool> table_;
+    {
+        for ( auto & i: data ) {
+            table_.insert(std::make_pair( i.first, false));
         }
-        Cycle_helper(root, root_parent, check, iscycle, square);
-        if(iscycle){
+    }
+    
+    std::string foo = "";
+    for( auto &id : subgraph ){
+        
+        if( Cycle_helper( id, foo, table_, square) ){
             return true;
         }
+        for( auto &i : table_ ){
+            i.second = false;
+        }
     }
-  return false;
+        
+    return false;
 }
-void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &iscycle, std::vector<double> &square){
-    if(inSquare(root , square)){
-        if(check[root] == 1){
-            iscycle = true;
-            return;
-        }
-        check[root] = 1;
+
+
+bool TrojanMap::Cycle_helper(std::string &id_curr, std::string &id_prev, std::unordered_map<std::string, bool> &table_, std::vector<double> &square){
+    
+    if(!inSquare( id_curr, square)) return false;
+    
+    bool &isVisited = table_[id_curr];
+    if( isVisited==true ){
+        return true;
     }
-    else{
-        return;
+
+    isVisited = true;
+    
+    for( auto &i : data[ id_curr ].neighbors ){
+        if( id_prev!="" && id_prev==i ) continue;
+        if( true==Cycle_helper( i, id_curr, table_, square) )
+            return true;
     }
-    for(auto i : GetNeighborIDs(root)){
-        if(root_parent != i){
-            Cycle_helper(i, root, check, iscycle, square);
-        }
-    }
+    
+    return false;
 }
 /**
  * FindNearby: Given a class name C, a location name L and a number r, 

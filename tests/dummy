@@ -155,3 +155,44 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
         updated_id.assign(tmp_id.begin(), tmp_id.end());
     }while( updated );
 
+
+
+
+
+
+bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+    std::unordered_map<std::string, int> check;
+    for(auto i = 0; i<subgraph.size(); i++){
+        std::string root = subgraph[i];
+        std::string root_parent = root;
+        bool iscycle = false;
+        for(auto i : subgraph){
+            check[i] = 0;
+        }
+        Cycle_helper(root, root_parent, check, iscycle, square);
+        if(iscycle){
+            return true;
+        }
+    }
+  return false;
+}
+
+
+void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::unordered_map<std::string, int> &check, bool &iscycle, std::vector<double> &square){
+    if(inSquare(root , square)){
+        if(check[root] == 1){
+            iscycle = true;
+            return;
+        }
+        check[root] = 1;
+    }
+    else{
+        return;
+    }
+    for(auto i : GetNeighborIDs(root)){
+        if(root_parent != i){
+            Cycle_helper(i, root, check, iscycle, square);
+        }
+    }
+}
+
