@@ -153,35 +153,35 @@ TEST(TrojanMapTest, FindClosestName) {
    EXPECT_EQ(path, gt);
  }
 
-// // Test cycle detection function
-// TEST(TrojanMapTest, CycleDetection) {
-//   TrojanMap m;
+ // Test cycle detection function
+ TEST(TrojanMapTest, CycleDetection) {
+   TrojanMap m;
   
-//   // Test case 1
-//   std::vector<double> square1 = {-118.299, -118.264, 34.032, 34.011};
-//   auto sub1 = m.GetSubgraph(square1);
-//   bool result1 = m.CycleDetection(sub1, square1);
-//   EXPECT_EQ(result1, true);
+   // Test case 1
+   std::vector<double> square1 = {-118.299, -118.264, 34.032, 34.011};
+   auto sub1 = m.GetSubgraph(square1);
+   bool result1 = m.CycleDetection(sub1, square1);
+   EXPECT_EQ(result1, true);
 
-//   // Test case 2
-//   std::vector<double> square2 = {-118.290, -118.289, 34.030, 34.020};
-//   auto sub2 = m.GetSubgraph(square2);
-//   bool result2 = m.CycleDetection(sub2, square2);
-//   EXPECT_EQ(result2, false);
-// }
+   // Test case 2
+   std::vector<double> square2 = {-118.290, -118.289, 34.030, 34.020};
+   auto sub2 = m.GetSubgraph(square2);
+   bool result2 = m.CycleDetection(sub2, square2);
+   EXPECT_EQ(result2, false);
+ }
 
 
 
-// // Test cycle detection function
-// TEST(TrojanMapTest, TopologicalSort) {
-//   TrojanMap m;
+ // Test cycle detection function
+ TEST(TrojanMapTest, TopologicalSort) {
+   TrojanMap m;
   
-//   std::vector<std::string> location_names = {"Ralphs", "Chick-fil-A", "KFC"};
-//   std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"KFC","Chick-fil-A"}};
-//   auto result = m.DeliveringTrojan(location_names, dependencies);
-//   std::vector<std::string> gt ={"Ralphs", "KFC","Chick-fil-A"};
-//   EXPECT_EQ(result, gt);
-// }
+   std::vector<std::string> location_names = {"Ralphs", "Chick-fil-A", "KFC"};
+   std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"KFC","Chick-fil-A"}};
+   auto result = m.DeliveringTrojan(location_names, dependencies);
+   std::vector<std::string> gt ={"Ralphs", "KFC","Chick-fil-A"};
+   EXPECT_EQ(result, gt);
+ }
 
 
 // // Phase 3
@@ -252,34 +252,34 @@ TEST(TrojanMapTest, FindClosestName) {
 
 
 
-List<int> updatedVertices;
-//add starting vertex as seed vertex in the list
-updatedVertices.add(seedVertexID);
- 
-// do the computation only for edges whose starting vertices has been updated
-while (updatedVertices.size() != 0)
-{
-    sourceVertexID = updatedVertices[i];
-     
-    currentEdges.clear();
-    your_api_get_edges_coming_out_of_vertex(sourceVertexID, currentEdges);
-     
-    //for list of all edges coming out of vertex
-    for (currentEdges.init(); tempEdge = currentEdges.next();)
-    {
-        //get start and end vertex for current edge
-        startVertexID = tempEdge.startVetexID();
-        endVertexID = tempEdge.endVertexID();
-        curEdgeLength = tempEdge.length();
-         
-        if ((vertexValues[startVertexID] + curEdgeLength) < vertexWeights[endVertexID])
-        {
-            vertexWeights[endVertexID] = vertexWeights[startVertexID] + curEdgeLength;
-            vertexTrail[endVertexID] = startVertexID;
-             
-            updatedVertices.add(tempEdge.endVertexID());
-        }
-    }
-}
-
-
+//List<int> updatedVertices;
+////add starting vertex as seed vertex in the list
+//updatedVertices.add(seedVertexID);
+// 
+//// do the computation only for edges whose starting vertices has been updated
+//while (updatedVertices.size() != 0)
+//{
+//    sourceVertexID = updatedVertices[i];
+//     
+//    currentEdges.clear();
+//    your_api_get_edges_coming_out_of_vertex(sourceVertexID, currentEdges);
+//     
+//    //for list of all edges coming out of vertex
+//    for (currentEdges.init(); tempEdge = currentEdges.next();)
+//    {
+//        //get start and end vertex for current edge
+//        startVertexID = tempEdge.startVetexID();
+//        endVertexID = tempEdge.endVertexID();
+//        curEdgeLength = tempEdge.length();
+//         
+//        if ((vertexValues[startVertexID] + curEdgeLength) < vertexWeights[endVertexID])
+//        {
+//            vertexWeights[endVertexID] = vertexWeights[startVertexID] + curEdgeLength;
+//            vertexTrail[endVertexID] = startVertexID;
+//             
+//            updatedVertices.add(tempEdge.endVertexID());
+//        }
+//    }
+//}
+//
+//

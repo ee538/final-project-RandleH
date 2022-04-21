@@ -117,7 +117,7 @@ void   MakeNewTrojanMap_( TrojanMap& tmap ){
 int main() {
     
     
-    TrojanMap          tmap;
+//    TrojanMap          tmap;
 //    MakeNewTrojanMap_( tmap );
 //    auto v = tmap.CalculateShortestPath_Bellman_Ford( "0", "4" );
 //    for( auto &i:v ){
