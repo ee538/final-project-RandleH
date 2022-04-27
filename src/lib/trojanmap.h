@@ -182,6 +182,7 @@ class TrojanMap {
                                         std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
     std::vector<std::string> Opt2swap(const std::vector<std::string> &route,int i,int k);
 
+    void brute_force_helper(std::vector<std::vector<std::string>> &memo, std::vector<rhqwq::NodeId_t> &id, double &distance, size_t cs, size_t ce );
 //private:
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
@@ -196,11 +197,7 @@ class TrojanMap {
         return false;
     }
     
-    void backtracking_helper(int start, std::vector<std::vector<double>> &weights,
-    int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
-                             std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
-    
-    std::vector<std::string>  Opt2swap(const std::vector<std::string> &route,int i,int k);
+   
 };
 
 #endif

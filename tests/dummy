@@ -196,3 +196,51 @@ void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::uno
     }
 }
 
+
+
+
+
+
+
+
+
+
+    if(ids.size() <= 1){
+        return make_pair( 0.0, std::vector<std::vector<std::string>>( 1,ids));
+    }
+    
+    std::pair<double, std::vector<std::vector<std::string>>> results; results.first = INFINITY;
+
+    std::vector<std::string> temp; temp.assign(ids.begin()+1,ids.end()); //std::sort(temp.begin(),temp.end());
+  
+    
+    auto root = ids[0];
+    do{
+          double cur_length = 0.0;
+  
+          for( size_t i=1; i<temp.size(); ++i ){
+              if( cur_length > results.first ){
+                  break;
+              }
+              cur_length += CalculateDistance( temp[i-1], temp[i]);
+          }
+          cur_length += CalculateDistance( root, temp[            0] );
+          cur_length += CalculateDistance( root, temp[temp.size()-1] );
+          
+          
+          
+          
+          if(cur_length < results.first){
+              results.first = cur_length;
+          
+              results.second.clear();
+              results.second.push_back({root});
+              results.second.back().insert( results.second.back().end(), temp.begin(), temp.end());
+              results.second.back().push_back(root);
+          
+          }
+        
+      }while(next_permutation(temp.begin(),temp.end()));
+      
+    
+    return results;

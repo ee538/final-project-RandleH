@@ -117,7 +117,35 @@ void   MakeNewTrojanMap_( TrojanMap& tmap ){
 int main() {
     
     
-//    TrojanMap          tmap;
+    TrojanMap          tmap;
+//    std::vector<std::string> input{"0","1","2","3"}; // Input location ids
+    std::vector<std::string> input{"6819019976","6820935923","122702233","8566227783","8566227656","6816180153","1873055993","7771782316"};
+    
+    
+    auto res = tmap.TravellingTrojan_Brute_force(input);
+    
+    for( auto &i:res.second ){
+        for( auto &j:i )
+            cout<< j << ' ';
+        cout<<endl;
+    }
+    
+    cout<<"Distance[ans]:"<<res.first<<endl;
+    cout<<"Distance[cal]:"<<tmap.CalculatePathLength(res.second.back())<<endl;
+    
+    RH_RECORD_TIME( tmap.TravellingTrojan_Brute_force(input), printf);
+    RH_RECORD_TIME( tmap.TravellingTrojan_Brute_force(input), printf);
+    RH_RECORD_TIME( tmap.TravellingTrojan_Brute_force(input), printf);
+    RH_RECORD_TIME( tmap.TravellingTrojan_Brute_force(input), printf);
+    RH_RECORD_TIME( tmap.TravellingTrojan_Brute_force(input), printf);
+    
+    return 0;
+    
+    
+    
+    
+    
+    
 //    MakeNewTrojanMap_( tmap );
 //    auto v = tmap.CalculateShortestPath_Bellman_Ford( "0", "4" );
 //    for( auto &i:v ){
@@ -160,19 +188,19 @@ int main() {
     
 
     
-    MapUI x;
-#ifdef NCURSES
-    x.PlotMap();
-    x.DynamicPrintMenu();
-#else
-    x.PlotMap();
-    x.PrintMenu();
-#endif
+//    MapUI x;
+//#ifdef NCURSES
+//    x.PlotMap();
+//    x.DynamicPrintMenu();
+//#else
+//    x.PlotMap();
+//    x.PrintMenu();
+//#endif
     
     
 
 
 
 
-    return 0;
+    
 }

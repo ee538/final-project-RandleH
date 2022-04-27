@@ -493,35 +493,67 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
  * @param  {std::vector<std::string>} input : a list of locations needs to visit
  * @return {std::pair<double, std::vector<std::vector<std::string>>} : a pair of total distance and the all the progress to get final path
  */
-std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Brute_force(
-                                    std::vector<std::string> location_ids) {
-    std::pair<double, std::vector<std::vector<std::string>>> results;
-      if(location_ids.size() <= 1){
-        std::vector<std::vector<std::string>> path;
-        return make_pair(0,path);
-      }
-      double min = DBL_MAX;
-      std::vector<std::string> temp;
-      std::vector<std::string> cur;
-      temp.assign(location_ids.begin()+1,location_ids.end());
-      std::sort(temp.begin(),temp.end());
-      do{
-        cur.push_back(location_ids[0]);
-        for(auto id:temp) cur.push_back(id);
-        cur.push_back(location_ids[0]);
-        double cur_length = CalculatePathLength(cur);
-        cur.clear();
-        if(cur_length < min){
-          min = cur_length;
-          results.first = min;
-          std::vector<std::string> path;
-          path.push_back(location_ids[0]);
-          for(auto id:temp) path.push_back(id);
-          path.push_back(location_ids[0]);
-          results.second.push_back(path);
+
+void TrojanMap::brute_force_helper(std::vector<std::vector<std::string>> &memo, std::vector<rhqwq::NodeId_t> &id, double &distance, size_t cs, size_t ce ){
+    if( ce == cs ){
+        double distance_tmp = 0;
+        for( size_t i=1; i<id.size(); ++i ){
+            if( distance_tmp > distance ){
+                break;
+            }
+            distance_tmp += CalculateDistance( id[i-1], id[i]);
         }
-      }while(next_permutation(temp.begin(),temp.end()));
-      return results;
+        if( distance_tmp < distance ){
+            memo.clear();
+            memo.push_back(id);
+            distance = distance_tmp;
+        }else if( distance_tmp == distance ){
+            memo.push_back(id);
+            distance = distance_tmp;
+        }
+        
+    }else{
+        for( size_t i=cs; i<=ce; ++i ){
+            std::swap( id[cs], id[i]); // Remove id[i] to front
+            brute_force_helper( memo, id, distance, cs+1, ce );
+            std::swap( id[cs], id[i]); // Restore id[i] to origin
+        }
+    }
+}
+
+std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Brute_force(
+                                    std::vector<std::string> ids) {
+    
+    if(ids.size() <= 1){
+        return make_pair( 0.0, std::vector<std::vector<std::string>>( 1,ids));
+    }
+    std::pair<double, std::vector<std::vector<std::string>>> res = std::make_pair( INFINITY, std::vector<std::vector<std::string>>());
+    
+    auto root = ids[0];
+    ids.erase(ids.begin());
+    do{
+        double distance_tmp = 0;
+        for( size_t i=1; i<ids.size(); ++i ){
+            if( distance_tmp > res.first ){
+                break;
+            }
+            distance_tmp += CalculateDistance( ids[i-1], ids[i]);
+        }
+        distance_tmp += CalculateDistance( root, ids[0] );
+        distance_tmp += CalculateDistance( root, ids[ids.size()-1]);
+        
+        if( distance_tmp <= res.first ){
+            if( distance_tmp < res.first )
+                res.second.clear();
+            res.second.push_back({root});
+            res.second.back().insert( res.second.back().end(), ids.begin(), ids.end());
+            res.second.back().push_back(root);
+            res.first = distance_tmp;
+        }
+        
+    }while( std::next_permutation( ids.begin(), ids.end()) );
+    
+    return res;
 }
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
