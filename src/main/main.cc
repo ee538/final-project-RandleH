@@ -141,9 +141,12 @@ int main() {
     
     return 0;
     
+    vector<int> v;
     
-    
-    
+    do{
+        //...//
+        
+    }while( std::next_permutation( v.begin(), v.end()) );
     
     
 //    MakeNewTrojanMap_( tmap );
