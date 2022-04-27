@@ -173,6 +173,10 @@ class TrojanMap {
   
   //----------------------------------------------------- User-defined functions
     bool Cycle_helper(std::string &id_curr, std::string &id_prev, std::unordered_map<std::string, bool> &table_, std::vector<double> &square);
+    void backtracking_helper(int start, std::vector<std::vector<double>> &weights,
+    int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
+                                        std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
+    std::vector<std::string> Opt2swap(const std::vector<std::string> &route,int i,int k);
 //private:
     rhqwq::V_NameNode_t v_Name_node_; // Sorted by original name string.
     rhqwq::V_NameNode_t v_name_node_; // Sorted by case unsensitive name string.
