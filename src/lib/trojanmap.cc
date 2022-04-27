@@ -493,20 +493,121 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
  */
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Brute_force(
                                     std::vector<std::string> location_ids) {
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+    std::pair<double, std::vector<std::vector<std::string>>> results;
+      if(location_ids.size() <= 1){
+        std::vector<std::vector<std::string>> path;
+        return make_pair(0,path);
+      }
+      double min = DBL_MAX;
+      std::vector<std::string> temp;
+      std::vector<std::string> cur;
+      temp.assign(location_ids.begin()+1,location_ids.end());
+      std::sort(temp.begin(),temp.end());
+      do{
+        cur.push_back(location_ids[0]);
+        for(auto id:temp) cur.push_back(id);
+        cur.push_back(location_ids[0]);
+        double cur_length = CalculatePathLength(cur);
+        cur.clear();
+        if(cur_length < min){
+          min = cur_length;
+          results.first = min;
+          std::vector<std::string> path;
+          path.push_back(location_ids[0]);
+          for(auto id:temp) path.push_back(id);
+          path.push_back(location_ids[0]);
+          results.second.push_back(path);
+        }
+      }while(next_permutation(temp.begin(),temp.end()));
+      return results;
 }
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+    std::vector<std::string> cur_path={location_ids[0]};
+    std::vector<std::string> min_path;
+    // std::vector<std::vector<std::string>> result_path;
+    std::pair<double, std::vector<std::vector<std::string>>> results;
+    std::vector<std::vector<double>> weights(location_ids.size(),std::vector<double>(location_ids.size()));
+    double min_cost=DBL_MAX;
+    if(location_ids.size() <= 1){
+        std::vector<std::vector<std::string>> path;
+        return make_pair(0,path);
+      }
+    for(int i=0;i<location_ids.size();i++){
+      for(int j=0;j<location_ids.size();j++){
+        weights[i][j]=CalculateDistance(location_ids[i],location_ids[j]);
+      }
+    }
+    backtracking_helper(0,weights,0,0,cur_path,min_cost,min_path,location_ids);
+    min_path.push_back(location_ids[0]);
+    // for(int k=0;k<min_path.size()-1;k++){
+    //   std::vector<std::string> tmp={min_path[k],min_path[k+1]};
+    //   result_path.push_back(tmp);
+    // }
+    // result_path.push_back({min_path[min_path.size()-2],min_path[min_path.size()-1]});
+    results.first=min_cost;
+    results.second.push_back(min_path);
+    return results;
+}
+
+void TrojanMap::backtracking_helper(int start, std::vector<std::vector<double>> &weights,
+int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
+std::vector<std::string> &min_path, std::vector<std::string> &location_ids){
+if(cur_path.size()==weights.size()){
+  double final_cost=cur_cost+weights[cur_node][start];
+  if(final_cost<min_cost){
+    min_cost=final_cost;
+    min_path=cur_path;
+  }
+  return;
+}
+if(cur_cost>=min_cost){
+  return;
+}
+for(int i=0;i<weights.size();i++){
+  if(std::find(cur_path.begin(),cur_path.end(),location_ids[i])==cur_path.end()){
+    cur_path.push_back(location_ids[i]);
+    backtracking_helper(start,weights,i,cur_cost+weights[cur_node][i],cur_path,min_cost,min_path,location_ids);
+    cur_path.pop_back();
+  }
+}
 }
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
       std::vector<std::string> location_ids){
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+    std::pair<double, std::vector<std::vector<std::string>>> results;
+     std::vector<std::string> cur_point = location_ids;
+     cur_point.push_back(location_ids[0]);
+     auto nums = location_ids.size();
+     bool judge = true;
+     while(judge){
+       start_again:
+       judge=false;
+       double cur_pathlen = CalculatePathLength(cur_point);
+       for(int i=1;i<nums-1;i++){
+         for(int k=i+1;k<nums;k++){
+           auto route = Opt2swap(cur_point,i,k);
+           double pathlen = CalculatePathLength(route);
+           if(pathlen<cur_pathlen){
+             cur_point = route;
+             cur_pathlen = pathlen;
+             results.first = cur_pathlen;
+             results.second.push_back(cur_point);
+             judge=true;
+             goto start_again;
+           }
+         }
+       }
+     }
+     return results;
+}
+
+
+std::vector<std::string> TrojanMap::Opt2swap(const std::vector<std::string> &route,int i,int k){
+  std::vector<std::string> res(route);
+  std::reverse(res.begin()+i,res.begin()+k+1);
+  return res;
 }
 
 /**
@@ -718,8 +819,45 @@ bool TrojanMap::Cycle_helper(std::string &id_curr, std::string &id_prev, std::un
  * @return {std::vector<std::string>}: location name that meets the requirements
  */
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
-  std::vector<std::string> res;
-  return res;
+    std::vector<std::string> res;
+     struct record
+     {
+       std::string id;
+       double dis;
+       bool operator<(const record &rhs) const
+       {
+         return dis < rhs.dis;
+       }
+     };
+     std::priority_queue<record> records;
+     std::string cur_id = GetID(name);
+     // O(N + KlogK)
+     for (const auto &it : data)
+     {
+       if (it.second.id == cur_id)
+         continue;
+       if (it.second.attributes.count(attributesName) > 0)
+       {
+         double dis = CalculateDistance(it.second.id, cur_id);
+         if (dis <= r && (records.size() < k || dis < records.top().dis))
+         {
+           if (records.size() >= k)
+           {
+             records.pop();
+           }
+           records.push({it.second.id, dis});
+         }
+       }
+     }
+     // O(KlogK)
+     while (records.size() != 0)
+     {
+       auto top = records.top();
+       records.pop();
+       res.push_back(top.id);
+     }
+     std::reverse(res.begin(), res.end());
+     return res;
 }
 
 /**
