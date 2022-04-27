@@ -27,7 +27,7 @@ static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list
         }
     }
 
-    return std::make_pair( false, m );
+    return std::make_pair( false, l );
 }
 
 static void strip_(std::string& str){
@@ -324,7 +324,9 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
             rhqwq::DijkstraInfo_t &dij_neighbor = table_[i];
             
             if( dij_neighbor.visited ) continue;
-            
+//            if(relax_(dij_cur, dij_neighbor)){
+//                table_unvisited_.push(dij_neighbor);
+//            }
             double distance = CalculateDistance( dij_cur.id, i );
             if( dij_cur.distance + distance < dij_neighbor.distance ){
                 // 查找 pNeighbor在数组中的位置
@@ -403,7 +405,7 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
 
                 dij_neighbor.distance = dij_cur.distance + distance;
                 dij_neighbor.prev_id  = dij_cur.id;
-                
+
                 table_unvisited_referenced_.push(&dij_neighbor);
                 table_unvisited_unreferenced_.erase( dij_neighbor.id );
             }
