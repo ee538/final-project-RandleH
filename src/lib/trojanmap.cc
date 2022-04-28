@@ -590,34 +590,35 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
 }
 
 
-std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
+pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
       std::vector<std::string> location_ids){
-    std::pair<double, std::vector<std::vector<std::string>>> results;
-     std::vector<std::string> cur_point = location_ids;
-     cur_point.push_back(location_ids[0]);
-     auto nums = location_ids.size();
-     bool judge = true;
-     while(judge){
+    std::pair<double, std::vector<std::vector<std::string>>> res;
+     std::vector<std::string> cur_id = location_ids;
+     cur_id.push_back(location_ids[0]);
+     bool check = true;
+     while(check){
        start_again:
-       judge=false;
-       double cur_pathlen = CalculatePathLength(cur_point);
-       for(int i=1;i<nums-1;i++){
-         for(int k=i+1;k<nums;k++){
-           auto route = Opt2swap(cur_point,i,k);
-           double pathlen = CalculatePathLength(route);
-           if(pathlen<cur_pathlen){
-             cur_point = route;
-             cur_pathlen = pathlen;
-             results.first = cur_pathlen;
-             results.second.push_back(cur_point);
-             judge=true;
+       check=false;
+       double best_distance = CalculatePathLength(cur_id);
+       for(int i=1;i<location_ids.size()-1;i++){
+         for(int k=i+1;k<location_ids.size();k++){
+           auto new_route = Opt2swap(cur_id,i,k);
+           double new_distance = CalculatePathLength(new_route);
+           if(new_distance<best_distance){
+             cur_id = new_route;
+             best_distance = new_distance;
+             check=true;
+             res.first = best_distance;
+             res.second.push_back(cur_id);
              goto start_again;
            }
          }
        }
      }
-     return results;
+     return res;
 }
+
+
 
 
 std::vector<std::string> TrojanMap::Opt2swap(const std::vector<std::string> &route,int i,int k){
