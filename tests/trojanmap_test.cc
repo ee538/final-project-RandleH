@@ -240,14 +240,14 @@ TEST(TrojanMapTest, TSP1) {
 //   EXPECT_EQ(flag, true);
 // }
 
-// // Test FindNearby points
-// TEST(TrojanMapTest, FindNearby) {
-//   TrojanMap m;
+ // Test FindNearby points
+ TEST(TrojanMapTest, FindNearby) {
+   TrojanMap m;
   
-//   auto result = m.FindNearby("supermarket", "Ralphs", 10, 10);
-//   std::vector<std::string> ans{"5237417649", "6045067406", "7158034317"};
-//   EXPECT_EQ(result, ans);
-// }
+   auto result = m.FindNearby("supermarket", "Ralphs", 10, 10);
+   std::vector<std::string> ans{"5237417649", "6045067406", "7158034317"};
+   EXPECT_EQ(result, ans);
+ }
 
 
 

@@ -135,7 +135,25 @@ void permutate( vector<int> &v, size_t cs, size_t ce){
 
 
 
+template<class T, class N>
+static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
+    if( list.empty() ) return std::make_pair( false, 0 );
 
+    int l=0, r=(int)(list.size()-1);
+    auto m = ((l+r)>>1);
+    while( l<=r ){
+        m = ((l+r)>>1);
+        if( list[m].first == tar ){
+            return std::make_pair( true, m );
+        }else if( list[m].first > tar ){
+            r = m-1;
+        }else{
+            l = m+1;
+        }
+    }
+
+    return std::make_pair( false, l );
+}
 
 
 
@@ -143,23 +161,16 @@ void permutate( vector<int> &v, size_t cs, size_t ce){
 int main() {
     
     
-    std::vector<std::string> input{"6819019976","6820935923","122702233","8566227783","8566227656","6816180153","1873055993","7771782316"};
-    
     TrojanMap tmap;
-//    RH_RECORD_TIME(tmap.TravellingTrojan_Brute_force(input), printf);
-    RH_RECORD_TIME(tmap.TravellingTrojan_Backtracking(input), printf);
-    RH_RECORD_TIME(tmap.TravellingTrojan_Backtracking(input), printf);
-    RH_RECORD_TIME(tmap.TravellingTrojan_Backtracking(input), printf);
-    RH_RECORD_TIME(tmap.TravellingTrojan_Backtracking(input), printf);
-    auto p = tmap.TravellingTrojan_Backtracking(input);
+    auto a = tmap.FindNearby("supermarket", "Ralphs", 10, 10);
     
-    for( auto &i:p.second){
-        for( auto &j:i ){
-            cout<< j<<' ';
-        }
-        cout<< endl;
+    RH_RECORD_TIME(tmap.FindNearby("supermarket", "Ralphs", 10, 10), printf);
+    RH_RECORD_TIME(tmap.FindNearby("supermarket", "Ralphs", 10, 10), printf);
+    RH_RECORD_TIME(tmap.FindNearby("supermarket", "Ralphs", 10, 10), printf);
+    
+    for( auto&i:a ){
+        cout<<i<<endl;
     }
-
     
 //    MapUI x;
 //#ifdef NCURSES

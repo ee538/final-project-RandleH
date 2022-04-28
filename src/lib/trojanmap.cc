@@ -12,7 +12,7 @@ static std::string tolowercase_(const std::string &str){
 
 template<class T, class N>
 static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
-    if( list.empty() ) return std::make_pair( false, -1 );
+    if( list.empty() ) return std::make_pair( false, 0 );
 
     int l=0, r=(int)(list.size()-1);
     auto m = ((l+r)>>1);
@@ -833,6 +833,44 @@ bool TrojanMap::Cycle_helper(std::string &id_curr, std::string &id_prev, std::un
  * @param {int} k: search numbers
  * @return {std::vector<std::string>}: location name that meets the requirements
  */
+
+#if 1
+std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
+    
+    Node &root = *this->v_Name_node_[ rhqwq::binary_search_( v_Name_node_, name).second ].second;
+    
+    struct Info_t{
+        Node  *node;
+        double distance;
+        bool operator< (const Info_t &rhs) const{ return distance <  rhs.distance; }
+        bool operator==(const Info_t &rhs) const{ return distance == rhs.distance; }
+        bool operator> (const Info_t &rhs) const{ return distance >  rhs.distance; }
+        Info_t( double dis , Node *nd):distance(dis),node(nd){}
+    };
+    
+    std::vector<std::pair<Info_t, char>> res_list; // The second is a dummy byte
+    
+    for ( auto &i : data){
+        if ( i.second.id == root.id )
+            continue;
+        
+        if ( i.second.attributes.count(attributesName) >0 ){
+            std::pair<Info_t, char> tmp = std::make_pair(Info_t( CalculateDistance( i.second.id, root.id ), &i.second ), 0);
+            size_t idx = rhqwq::binary_search_( res_list, tmp.first).second;
+            res_list.insert(res_list.begin()+idx, tmp);
+        }
+    }
+    
+    std::vector<std::string> res;
+    for( size_t i=0; i<std::min( res_list.size(), (size_t)(k)); ++i ){
+        res.push_back(res_list[i].first.node->id);
+    }
+    
+    return res;
+}
+
+
+#else
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
     std::vector<std::string> res;
      struct record
@@ -874,6 +912,8 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
      std::reverse(res.begin(), res.end());
      return res;
 }
+
+#endif
 
 /**
  * CreateGraphFromCSVFile: Read the map data from the csv file
