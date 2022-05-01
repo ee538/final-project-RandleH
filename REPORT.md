@@ -248,7 +248,7 @@ Latitude: 34.0354 Longitude: -118.284
 Time taken by function: 0 ms
 ```
 
-![image-20220501014316287](image-20220501014316287.png)
+![image-20220501014316287](./img/resource/image-20220501014316287.png)
 
 ```c++
 **************************************************************
@@ -265,7 +265,7 @@ Latitude: 34.0318 Longitude: -118.291
 Time taken by function: 0 ms
 ```
 
-![image-20220501014331335](image-20220501014331335.png)
+![image-20220501014331335](./img/resource/image-20220501014331335.png)
 
 ​	From the results we can see the run time is pretty fast(0ms)
 ​	The time complexity of GetPosition is O(log(n));
