@@ -512,14 +512,15 @@ TrojanMap::TravellingTrojan_Brute_force(
     ids.erase(ids.begin());
     do{
         double distance_tmp = 0;
+        distance_tmp += CalculateDistance(   root, ids[0] );
+        distance_tmp += CalculateDistance(   root, ids[ids.size()-1]);
         for( size_t i=1; i<ids.size(); ++i ){
             if( distance_tmp > res.first ){ // Early backtracking
                 break;
             }
             distance_tmp += CalculateDistance( ids[i-1], ids[i]);
         }
-        distance_tmp += CalculateDistance( root, ids[0] );
-        distance_tmp += CalculateDistance( root, ids[ids.size()-1]);
+        
         
         if( distance_tmp <= res.first ){
             if( distance_tmp < res.first )
