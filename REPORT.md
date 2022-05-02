@@ -16,260 +16,446 @@
 
 
 
-## Document Symbol Dercription
-
-| Symbol | Description        |
-| :----: | ------------------ |
-|   ®️    | Reference variable |
-|   🟢    | Input parameters   |
-|   🔴    | Output parameters  |
-|   🔒    | Read-only variable |
 
 
 
 
+## Member Functions & Variables
 
-## Data Structure 
+### Phase 1
 
+| Name                               | Description                                           |
+| ---------------------------------- | ----------------------------------------------------- |
+| [.Autocomplete](#autocomplete)     | Complete the location name given a half-word          |
+| [.GetLat](#getlat])                | Get the latitude of a location                        |
+| [.GetLon](#getlon])                | Get the longtitude of a location                      |
+| [.GetName](#getname)               | Get the name of a location                            |
+| [.GetID](#getid)                   | Get the unique identification of a location           |
+| [.GetNeighborIDs](#getneighborids) | Get neighbors of a location                           |
+| [.GetPosition](#getposition)                     |                                                       |
+| [.CalculateEditDistance](#calculateeditdistance)           | Calculate a the shortest edit distance of two strings |
+| [.FindClosestName](findclosestname)          | Find out the cloest name matched with the given one   |
 
-
-Each point on the map is represented by the class **Node** shown below and defined in trojanmap.h
-
-```c++
-class Node {
-public:
-    Node(){};
-    Node(const Node &n){id = n.id; lat = n.lat; lon = n.lon; name = n.name; neighbors = n.neighbors; attributes = n.attributes;};
-    std::string id;                              // A unique id assign to each point
-    double lat;                                  // Latitude
-    double lon;                                  // Longitude
-    std::string name;                            // Name of the location. E.g. "Bank of America".
-    std::vector<std::string> neighbors;          // List of the ids of all neighbor points.
-    std::unordered_set<std::string> attributes;  // List of the attributes of the location.
-};
-```
-
-​	Also, in order to realise these functions conveniently, we created our own namespace rhqwq and some data structures in trojanmap.h
-
-```c++
-// Self-defined implimentation
-namespace rhqwq{
-// Data Structure
-typedef std::pair<std::string, Node*>   NameNode_t;     // A pair binding the location name with its node information.
-typedef std::vector< NameNode_t >       V_NameNode_t;   // A vector contains a bunch of such combinations.
-typedef std::string NodeId_t;
-class BellmanInfo_t{
-public:
-    NodeId_t  id;
-    NodeId_t  prev_id;
-    Node     *node;
-    double   distance;
-    BellmanInfo_t(){}
-    BellmanInfo_t( NodeId_t node_id, double dis, Node* node) :id(node_id),node(node),distance(dis){};
-    
-};
-class DijkstraInfo_t : public BellmanInfo_t{
-public:
-    bool      visited;
-    DijkstraInfo_t(){}
-    DijkstraInfo_t( NodeId_t node_id, double dis, Node* node ) :visited(false), BellmanInfo_t(node_id,dis,node) {}
-        
-};
-
-```
+[TEST Phase1](#test phase1)
 
 
 
+### Phase 2
 
-
-### `rhqwq::DijkstraInfo_t` 	
-
-| Member     | Type       | Initialization Value | Description                                       |
-| ---------- | :--------- | -------------------- | ------------------------------------------------- |
-| `id`       | `NodeId_t` | `data(id)`           | Represent the current node’s id                   |
-| `prev_id`  | `NodeId_t` | `data(id)`           | Represent the previous node’s id                  |
-| `*node`    | `Node`     | `nullptr`            | Pointer the content(lat,lon,id) in the class Node |
-| `visited`  | `bool`     | `false`              | To record the nodes that were been visited        |
-| `distance` | `double`   | `INFINITY`           | To record the distance between the nodes          |
-
+| Name                                                  | Description |
+| -------------------------------------                 | ----------- |
+| [.CalculateShortestPath_Bellman_Ford](#bellman)       |             |
+| [.CalculateShortestPath_Dijkstra](#dijkstra)          |             |
+| [.CycleDetection](#cycledetection)                    |             |
+| [.DeliveringTrojan]                                   |             |
+|                                                       |             |
 
 
 
+## Detailed Implimentation
 
-## Auxiliary Function Method
-
-### `rhqwq::tolowercase_`
-
-| Params     | Attributes | Type                  | Description                                |
-| ---------- | :--------: | --------------------- | ------------------------------------------ |
-| `str`      | 🟢 \| 🔒\|®️  | `const std::string &` | The input string to be converted           |
-| `$return$` |     🔴      | `std::string`         | The lower case version of the input string |
-
-
-
-### `rhqwq::binary_search_`
-
-| Params     | Attributes |               Type               | Description                        |
-| ---------- | :--------: | :------------------------------: | :--------------------------------- |
-| `list`     |  🟢 \|🔒\|®️  | `const vector<std::pair<T,N> >&` | Define a pair to store two strings |
-| `tar`      |  🟢 \|🔒\|®️  |            `const T&`            | The input string that we type      |
-| `$return$` |     🔴      |       `std::pair<bool,id>`       | The input(if exists), otherwise -1 |
-
-
-
-### `rhqwq::strip_`
-
-| Params | Attributes | Type                                   | Description                  |
-| :----- | :--------: | -------------------------------------- | ---------------------------- |
-| `str`  |  🟢 \|🔒\|®️  | `static void strip_(std::string& str)` | Strip the space in the input |
-
-
-
-We also do some pre-processing on our dataset in trojanmap.cc  to make it faster when we use this app.
-
-```c++
-namespace rhqwq{
-static std::string tolowercase_(const std::string &str){
-    std::string tmp = str;
-    transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-    return tmp;
-}
-
-template<class T, class N>
-static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar ){
-    if( list.empty() ) return std::make_pair( false, -1 );
-
-    int l=0, r=(int)(list.size()-1);
-    auto m = ((l+r)>>1);
-    while( l<=r ){
-        m = ((l+r)>>1);
-        if( list[m].first == tar ){
-            return std::make_pair( true, m );
-        }else if( list[m].first > tar ){
-            r = m-1;
-        }else{
-            l = m+1;
-        }
-    }
-
-    return std::make_pair( false, m );
-}
-
-static void strip_(std::string& str){
-    if (str.length() == 0) return;
-
-    auto start_it = str.begin();
-    auto end_it   = str.rbegin();
-    while (std::isspace(*start_it)) {
-        ++start_it;
-        if (start_it == str.end()) break;
-    }
-    while (std::isspace(*end_it)) {
-        ++end_it;
-        if (end_it == str.rend()) break;
-    }
-    auto start_pos = start_it - str.begin();
-    auto end_pos   = end_it.base() - str.begin();
-    str = (start_pos <= end_pos) ? std::string(start_it, end_it.base()) : "";
-}
-}
-```
-
-
-
-<h3>1.Autocomplete the location name</h3>
-
-<h4>1.1 Function</h4>
+<h4>Autocomplete</h4> <div id="autocomplete"></div>
 
 ```c++
 std::vector<std::string> TrojanMap::Autocomplete(std::string name);
 ```
 
-​	Type the partial name of the location and return a list of possible locations with partial name as prefix. It's also not a case-sensitive function, so we just turn all of the name to the lowercase.
-It will take a long time if we just search a name in an unordered dataset. So we decided to sorted the dataset when we load the app. And use binary search to decrease the time comlexity to O(log(n)).
+Type the partial name of the location and return a list of possible locations with partial name as prefix. It's also not a case-sensitive function, so we just turn all of the name to the lowercase.
 
-<h4>1.2 Results</h4>
+
+
+It will take a long time if we just search a name in an unordered dataset. So we decided to sorted the dataset when we load the app. And use binary search to decrease the time comlexity to `O(log(n))`.
+
+<img src="./img/resource/1_autocomplete_1.png" alt="1_autocomplete_1" style="zoom:73%;" />
+
+
+
+We pre-sort the name list of all the nodes in the order of string. When given a name, we add a letter `z` and space because the name appear only in this range. Then we use **binary search** to find out the range between these two.
+
+- **Time complexity**
+
+  `O(log n)`
+
+
+
+- **Example**
+
+  [input]
+
+  ```c++
+  auto v = tmap.Autocomplete("chi");
+  ```
+
+   
+
+  [output]
+
+  ```
+  **************************************************************
+  Please input a partial location:chi
+  *************************Results******************************
+  Chick-fil-A
+  Chinese Street Food
+  Chipotle
+  **************************************************************
+  Time taken by function: 0 ms
+  ```
+
+
+
+
+
+<h4>GetLat</h4> <div id="getlat"></div>
 
 ```c++
-**************************************************************
-Please input a partial location:chi
-*************************Results******************************
-Chick-fil-A
-Chinese Street Food
-Chipotle
-**************************************************************
-Time taken by function: 0 ms
+double GetLat(const std::string& id);
 ```
 
-​	Because we sorted the data during the loading time. so it’s very fast to get the result(0ms) when we use this function. Also when I type the lowercase string it still return the original name in the dataset.
-​	The time complexity of this function is:
+We already have the mapping from id to its node information. It's easy.
 
-<h3>2.Find the place’s Coordianes in the Map </h3>
+<h4>GetLon</h4> <div id="getlon"></div>
 
-<h4>2.1 Function</h4>
+```c++
+double GetLon(const std::string& id);
+```
+
+<h4>GetName</h4> <div id="getname"></div>
+
+```c++
+std::string GetName(const std::string& id);
+```
+
+<h4>GetID</h4> <div id="getid"></div>
+
+```c++
+std::string GetID(const std::string& name);
+```
+
+Use our **binary search** model to search a node entire information through its name.
+
+- **Time Complexity**
+
+  `O(log n)`
+
+  
+
+- **Example**
+
+  [input]
+
+  ```c++
+  auto s = GetID("KFC");
+  ```
+
+  [output]
+
+  ```
+  3088547686
+  ```
+
+  
+
+<h4>GetPosition</h4> <div id="getposition"></div>
 
 ```c++
 std::pair<double, double> TrojanMap::GetPosition(std::string name); 
+```
+
+- **Time Complexity**
+
+  `O(log n)`
+
+
+
+<h4>CalculateEditDistance</h4> <div id="calculateeditdistance"></div>
+
+```c++
+int TrojanMap::CalculateEditDistance(std::string w1, std::string w2);
 ```
 
 It’s similar to the previous function, we sort the dataset firstly and use binary search to compare the name with the input.
 
 Also we need to give the most similar word if we have a typo in our input , so we implement these two functions.
 
-```c++
-int TrojanMap::CalculateEditDistance(std::string w1, std::string w2);
-std::string TrojanMap::FindClosestName(std::string name);
-```
+Here is the dynamic programming table:
 
-​	First we use dynamic programming on the EditDistance, and do it twice by taking pointer and vector. Then we decided to take the fastest method——iteration. Then we find the closest name by taking rules of the smallest edit distance. (It’s case sensitive)
+<img src="/Users/randle_h/Desktop/final-project-RandleH/img/resource/1_editdistance_1.png" alt="1_editdistance_1" style="zoom:50%;" />
 
- 	The status transition equation is this:
+This table memorize what is the shortest edit distance so far. Since we update each step with its local optimal result. Therefore, we will eventually get the global optimal result which is the element at the right bottom corner.
 
-```c++
- if word1[i]==word2[j]:
-	d[i][j]=1+min(d[i-1][j],d[i][j-1],d[i-1][j-1]-1)
- if word1[i]!=word2[j]:
-	d[i][j]=1+min(d[i-1][j],d[i][j-1],d[i-1][j-1]-1)
-```
+- **Time Complexity**
 
-<h4>2.2 Results</h4>
+  `O(mn)`  m and n is the string length respectively.
 
-```c++
-**************************************************************
-* 2. Find the location                                        
-**************************************************************
+  
 
-Please input a location:arco
-*************************Results******************************
-No matched locations.
-Did you mean Arco instead of arco? [y/n]y
-Latitude: 34.0354 Longitude: -118.284
-**************************************************************
-Time taken by function: 0 ms
-```
+- **Example**
 
-![image-20220501014316287](./img/resource/image-20220501014316287.png)
+  [input]
 
-```c++
-**************************************************************
-Please select 1 - 8: 2
+  ```c++
+  int n = tmap.CalculateEditDistance("USC", "UCLA");
+  ```
 
-**************************************************************
-* 2. Find the location                                        
-**************************************************************
+  [output]
 
-Please input a location:Ralphs
-*************************Results******************************
-Latitude: 34.0318 Longitude: -118.291
-**************************************************************
-Time taken by function: 0 ms
-```
+  ```
+  3
+  ```
+  
+  
 
-![image-20220501014331335](./img/resource/image-20220501014331335.png)
+<h4>FindClosestName</h4> <div id="findclosestname"></div>
 
-​	From the results we can see the run time is pretty fast(0ms)
-​	The time complexity of GetPosition is O(log(n));
-​	The time complexity of CalculateEditDistance is O(n²);
+We compare all the possible name with the given one and call the function `CalculateEditDistance` to get the minimum edit distance correspond with the nodes and return that name.
+
+- **Time Complexity**
+
+  `O(n)`
+
+  
+
+- **Example**
+
+  [input]
+
+  ```c++
+  auto s = tmap.FindClosestName("Adem Fuet")
+  ```
+
+  [output]
+
+  ```
+  Adams Fuel
+  ```
+
+  
+
+---
+
+<h4>CalculateShortestPath_Bellman_Ford</h4> <div id="bellman"></div>
+
+We impliment this function by the following flow chart.
+
+<img src="./img/resource/2_bellman_1.png" alt="2_bellman_1" style="zoom:60%;" />
+
+We use `std::map` as our table data structure with these following properties.
+
+1. Good searching method
+2. Store distance information
+3. Store node information
+
+
+
+We initialize the table by setting all the other nodes to `INFINITY`.
+
+
+
+Here we summarize the key point about relaxing a location node.
+
+1. Calculate the distance to neighbor
+2. Add current node distance away from root
+3. Compare to the neighbor distance, if shorter, update the table
+
+For further detail of relaxing a node, please see [rhqwq::relax_](#rhqwqrelax)
+
+For the data structure of our bellman table, please see [rhqwq::Bellman_Info_t](#rhqwqbellman)
+
+
+
+**Optimization:**
+
+1. No need to iterate all the node
+
+2. Stop when no other distance updated
+
+3. Starting from the node that previously updated
+
+
+
+Use queue to store the node that just being updated. When update a node, put it into the queue. When iterate a node, pop one from the queue. The queue always store the data that is updated from the previous iteration. When the queue is empty, we stop. Because no additional node is updated.
+
+
+
+- **Time Complexity**
+
+  `O(VE)` V and E are the numbers of vertices and edges.
+
+   
+
+- **Example**
+
+  [input] QWQ
+
+  ```c++
+  ```
+
+  [output]
+
+  ```
+  ```
+
+  
+
+  
+
+<h4>CalculateShortestPath_Dijkstra</h4> <div id="dijkstra"></div>
+
+We impliment this function by the following flow chart.
+
+<img src="./img/resource/2_dijsktra_1.png" alt="2_dijsktra_1" style="zoom:67%;" />
+
+Use `std::priority_queue` to find out the unvisited node with shortest distance.
+
+We create a boolean flag to mark visited node.
+
+
+
+- **Time Complexity**
+
+  `O( (V+E)log(V+E) )`
+
+
+
+- **Example**
+
+  [input]
+
+  ```c++
+  auto v = tmap.CalculateShortestPath_Dijkstra("Los Angeles & Olympic", "Vermont Elementary School");
+  ```
+
+  [output]
+
+  ```
+  5002237122 2820043671 3659488053 2871010078 ... 6818427893 6818427894 6818427895 6807909277 358794109 
+  ```
+
+
+
+- **Comparison**
+
+  Here is the comparison for 10 rounds for searching a shortest path between `Bellman` and `Dijsktra` algorithm.
+
+  <img src="./img/resource/2_bellman_dijsktra_comp_1.jpg" alt="2_bellman_dijsktra_comp_1" style="zoom:80%;" />
+
+   
+
+  Here is the comparison for 10 routes for searching a shortest path between `Bellman` and `Dijsktra` algorithm.
+
+  <img src="./img/resource/2_bellman_dijsktra_comp_2.jpg" alt="2_bellman_dijsktra_comp_2" style="zoom:80%;" />
+
+
+
+<h4>CycleDetection</h4> <div id="cycledetection"></div>
+
+
+
+
+
+
+
+## Self-Defined Method & Member
+
+<h4>rhqwq::relax_</h4> <div id="rhqwqrelax"></div>
+
+
+
+
+
+
+
+<h4>rhqwq::Bellman_Info_t</h4> <div id="rhqwqbellman"></div>
+
+| Member     | Type       | Initialization Value | Description                                       |
+| ---------- | :--------- | -------------------- | ------------------------------------------------- |
+| `id`       | `NodeId_t` | `data(id)`           | Represent the current node’s id                   |
+| `prev_id`  | `NodeId_t` | `data(id)`           | Represent the previous node’s id                  |
+| `*node`    | `Node`     | `nullptr`            | Pointer the content(lat,lon,id) in the class Node |
+| `distance` | `double`   | `INFINITY`           | To record the distance between the nodes          |
+
+
+
+
+
+
+
+## Test Validation
+
+<h4>Test - Phase 1</h4> <div id="test phase1"></div>
+
+- **Case 1**
+
+  [input]
+
+  ```bash
+  $ 2
+  $ pico
+  $ y
+  ```
+
+  [output]
+
+  ![1_test_1](./img/resource/1_test_1.jpg)![1_test_1_graph](./img/resource/1_test_1_graph.png)
+
+  
+
+- **Case 2**
+
+  [input]
+
+  ```bash
+  $ 2
+  $ rophs
+  $ y
+  ```
+
+  [output]
+
+  ![1_test_2](./img/resource/1_test_2.jpg)![1_test_2_graph](./img/resource/1_test_2_graph.png)
+
+- **Case 3**
+
+  [input]
+
+  ```bash
+  $ 2
+  $ 11
+  $ y
+  ```
+
+  [output]
+
+  ![1_test_3](./img/resource/1_test_3.jpg)![1_test_3_graph](./img/resource/1_test_3_graph.png)
+
+
+
+- **Case 4**
+
+  [input]
+
+  ```bash
+  $ 1
+  $ Ta
+  ```
+
+  [output]
+
+  ```c++
+  *************************Results*****************************
+  Tap Two Blue
+  Target
+  *************************************************************
+  Time taken by function: 0 ms
+  ```
+
+  
+
+
+
+
+
+
 
 <h3>3.Calculate shortest path between two places</h3>
 
