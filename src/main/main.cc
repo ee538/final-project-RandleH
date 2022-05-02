@@ -12,23 +12,25 @@ using namespace std;
 int main() {
   
 //
-    TrojanMap tmap;
-    
-    auto v = tmap.CalculateShortestPath_Dijkstra("Los Angeles & Olympic", "Vermont Elementary School");
-    for( auto&i:v )
-        cout<<i<<' ';
-    cout<<endl;
+//    TrojanMap tmap;
     
     
 //    cout<<tmap.FindClosestName("Adem Fuet");
-//    MapUI x;
-//#ifdef NCURSES
-//    x.PlotMap();
-//    x.DynamicPrintMenu();
-//#else
-//    x.PlotMap();
-//    x.PrintMenu();
-//#endif
+    MapUI x;
+#ifdef NCURSES
+    x.PlotMap();
+    x.DynamicPrintMenu();
+#else
+    x.PlotMap();
+    x.PrintMenu();
+#endif
 
     
 }
+
+
+
+$ -118.291
+$ -118.289
+$ 34.030
+$ 34.020

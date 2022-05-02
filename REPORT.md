@@ -47,7 +47,7 @@
 | [.CalculateShortestPath_Bellman_Ford](#bellman)       |             |
 | [.CalculateShortestPath_Dijkstra](#dijkstra)          |             |
 | [.CycleDetection](#cycledetection)                    |             |
-| [.DeliveringTrojan]                                   |             |
+| [.DeliveringTrojan](#topo)                            |             |
 |                                                       |             |
 
 
@@ -162,7 +162,21 @@ Use our **binary search** model to search a node entire information through its 
   ```
 
 
+
 ---
+
+<h3>GetNeighborIDs</h3> <div id="getneighborids"></div>
+
+```c++
+std::vector<std::string> GetNeighborIDs(const std::string& id);
+```
+
+
+
+
+---
+
+
 
 <h3>GetPosition</h3> <div id="getposition"></div>
 
@@ -360,6 +374,98 @@ We create a boolean flag to mark visited node.
 
 <h3>CycleDetection</h3> <div id="cycledetection"></div>
 
+Check the existence for a cycle path in a subgraph. Use DFS to traverse all the nodes and return true if a neighbour has been visited twice (except parents) 
+
+- **Time Complexity**
+
+  `O(n)`
+
+  
+
+- **Example**
+
+  [input]
+
+  ```bash
+  $ -118.290
+  $ -118.289
+  $ 34.030
+  $ 34.020
+  ```
+
+  [output]
+
+  ```c++
+  *************************Results******************************
+  there exist no cycle in the subgraph 
+  **************************************************************
+  Time taken by function: 15 ms
+  ```
+
+  <img src="./img/resource/2_cycle_1.png" alt="2_cycle_1" style="zoom:50%;" /> 
+
+
+
+- [input]
+
+  ```bash
+  $ -118.291
+  $ -118.289
+  $ 34.030
+  $ 34.020
+  ```
+
+  [output]
+
+  ```c++
+  *************************Results******************************
+  there exists a cycle in the subgraph 
+  **************************************************************
+  Time taken by function: 19 ms
+  ```
+
+  <img src="./img/resource/2_cycle_2.png" alt="2_cycle_2" style="zoom:100%;" /> 
+
+
+
+
+
+---
+
+<h3>DeliveringTrojan</h3> <div id="topo"></div>
+
+We impliment this function by the following flow chart.
+
+<img src="./img/resource/2_topo_1.png" alt="2_topo_1" style="zoom:70%;" />
+
+Use Breath First Search to iterate the graph nodes.
+
+**Optimization**
+
+1. Push the node into queue while doing the process
+
+2. Reduce neighbor’s income is the only fact cause it to zero.
+
+
+
+- **Time Complexity**
+
+  `O(VE)`
+
+   
+
+- **Example**
+
+  [input]
+
+  <img src="./img/resource/2_topo_4.png" alt="2_topo_4" style="zoom:70%;" /> 
+
+  [output]
+
+  <img src="./img/resource/2_topo_3.png" alt="2_topo_3" style="zoom:80%;" /> 
+
+
+
 
 
 
@@ -461,6 +567,44 @@ We create a boolean flag to mark visited node.
   ```
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
