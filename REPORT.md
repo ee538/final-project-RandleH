@@ -2,7 +2,7 @@
 
 <center><h1>Trojan Map Report</h1></center>
 
-<center><h4>Team Member: Yuanji Qiu(USC ID:707421454)  Weiqiang Qian(USC ID:5555112745)</h4></center>
+<center><h3>Team Member: Yuanji Qiu(USC ID:707421454)  Weiqiang Qian(USC ID:5555112745)</h3></center>
 
 <h3>Content</h3>
 1.Autocomplete the location name
@@ -36,7 +36,7 @@
 | [.CalculateEditDistance](#calculateeditdistance)           | Calculate a the shortest edit distance of two strings |
 | [.FindClosestName](findclosestname)          | Find out the cloest name matched with the given one   |
 
-[TEST Phase1](#test phase1)
+[TEST Phase1](#test_phase1)
 
 
 
@@ -54,7 +54,9 @@
 
 ## Detailed Implimentation
 
-<h4>Autocomplete</h4> <div id="autocomplete"></div>
+---
+
+<h3>Autocomplete</h3> <div id="autocomplete"></div>
 
 ```c++
 std::vector<std::string> TrojanMap::Autocomplete(std::string name);
@@ -103,9 +105,9 @@ We pre-sort the name list of all the nodes in the order of string. When given a 
 
 
 
+---
 
-
-<h4>GetLat</h4> <div id="getlat"></div>
+<h3>GetLat</h3> <div id="getlat"></div>
 
 ```c++
 double GetLat(const std::string& id);
@@ -113,19 +115,25 @@ double GetLat(const std::string& id);
 
 We already have the mapping from id to its node information. It's easy.
 
-<h4>GetLon</h4> <div id="getlon"></div>
+---
+
+<h3>GetLon</h3> <div id="getlon"></div>
 
 ```c++
 double GetLon(const std::string& id);
 ```
 
-<h4>GetName</h4> <div id="getname"></div>
+---
+
+<h3>GetName</h3> <div id="getname"></div>
 
 ```c++
 std::string GetName(const std::string& id);
 ```
 
-<h4>GetID</h4> <div id="getid"></div>
+---
+
+<h3>GetID</h3> <div id="getid"></div>
 
 ```c++
 std::string GetID(const std::string& name);
@@ -153,9 +161,10 @@ Use our **binary search** model to search a node entire information through its 
   3088547686
   ```
 
-  
 
-<h4>GetPosition</h4> <div id="getposition"></div>
+---
+
+<h3>GetPosition</h3> <div id="getposition"></div>
 
 ```c++
 std::pair<double, double> TrojanMap::GetPosition(std::string name); 
@@ -165,9 +174,9 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name);
 
   `O(log n)`
 
+---
 
-
-<h4>CalculateEditDistance</h4> <div id="calculateeditdistance"></div>
+<h3>CalculateEditDistance</h3> <div id="calculateeditdistance"></div>
 
 ```c++
 int TrojanMap::CalculateEditDistance(std::string w1, std::string w2);
@@ -179,7 +188,7 @@ Also we need to give the most similar word if we have a typo in our input , so w
 
 Here is the dynamic programming table:
 
-<img src="/Users/randle_h/Desktop/final-project-RandleH/img/resource/1_editdistance_1.png" alt="1_editdistance_1" style="zoom:50%;" />
+<img src="./img/resource/1_editdistance_1.png" alt="1_editdistance_1" style="zoom:50%;" />
 
 This table memorize what is the shortest edit distance so far. Since we update each step with its local optimal result. Therefore, we will eventually get the global optimal result which is the element at the right bottom corner.
 
@@ -203,9 +212,10 @@ This table memorize what is the shortest edit distance so far. Since we update e
   3
   ```
   
-  
 
-<h4>FindClosestName</h4> <div id="findclosestname"></div>
+---
+
+<h3>FindClosestName</h3> <div id="findclosestname"></div>
 
 We compare all the possible name with the given one and call the function `CalculateEditDistance` to get the minimum edit distance correspond with the nodes and return that name.
 
@@ -233,7 +243,7 @@ We compare all the possible name with the given one and call the function `Calcu
 
 ---
 
-<h4>CalculateShortestPath_Bellman_Ford</h4> <div id="bellman"></div>
+<h3>CalculateShortestPath_Bellman_Ford</h3> <div id="bellman"></div>
 
 We impliment this function by the following flow chart.
 
@@ -297,9 +307,10 @@ Use queue to store the node that just being updated. When update a node, put it 
 
   
 
-  
 
-<h4>CalculateShortestPath_Dijkstra</h4> <div id="dijkstra"></div>
+---
+
+<h3>CalculateShortestPath_Dijkstra</h3> <div id="dijkstra"></div>
 
 We impliment this function by the following flow chart.
 
@@ -345,9 +356,9 @@ We create a boolean flag to mark visited node.
 
   <img src="./img/resource/2_bellman_dijsktra_comp_2.jpg" alt="2_bellman_dijsktra_comp_2" style="zoom:80%;" />
 
+---
 
-
-<h4>CycleDetection</h4> <div id="cycledetection"></div>
+<h3>CycleDetection</h3> <div id="cycledetection"></div>
 
 
 
@@ -357,7 +368,7 @@ We create a boolean flag to mark visited node.
 
 ## Self-Defined Method & Member
 
-<h4>rhqwq::relax_</h4> <div id="rhqwqrelax"></div>
+<h3>rhqwq::relax_</h3> <div id="rhqwqrelax"></div>
 
 
 
@@ -365,7 +376,7 @@ We create a boolean flag to mark visited node.
 
 
 
-<h4>rhqwq::Bellman_Info_t</h4> <div id="rhqwqbellman"></div>
+<h3>rhqwq::Bellman_Info_t</h3> <div id="rhqwqbellman"></div>
 
 | Member     | Type       | Initialization Value | Description                                       |
 | ---------- | :--------- | -------------------- | ------------------------------------------------- |
@@ -382,7 +393,7 @@ We create a boolean flag to mark visited node.
 
 ## Test Validation
 
-<h4>Test - Phase 1</h4> <div id="test phase1"></div>
+<h3>Test - Phase 1</h3> <div id="test_phase1"></div>
 
 - **Case 1**
 
@@ -459,7 +470,7 @@ We create a boolean flag to mark visited node.
 
 <h3>3.Calculate shortest path between two places</h3>
 
-<h4>3.1 Function</h4>
+<h3>3.1 Function</h3>
 
 ```c++
 std::vector<std::string> CalculateShortestPath_Dijkstra(std::string &location1_name,
@@ -478,7 +489,7 @@ For Dijkstra, the flowchart explains how it works:
 
 ![image-20220501014431626](image-20220501014431626.png)
 
-<h4>3.2 Results</h4>
+<h3>3.2 Results</h3>
 
 Start location: ‘Los Angeles & Olympic’
 
@@ -516,7 +527,7 @@ Dijkstra alwasy has a better performance than Bellman Ford.
 
 <h3>4.Traveling Sales Man</h3>
 
-<h4>4.1 Function</h4>
+<h3>4.1 Function</h3>
 
 ```c++
 std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
@@ -552,7 +563,7 @@ Here is the idea that we calculate the distance, cross symbol is the element we 
 
 
 
-<h4>4.2 Results</h4>
+<h3>4.2 Results</h3>
 
 | Method\Nodes\Distance | 8\ms | D\miles | 9\ms | D\miles | 10\ms | D\miles | 11\ms | D\miles | 12\ms | D\miles | 13\ms   | D\miles | 14\ms   | D\miles | 15\ms   | D\miles | 20\ms   | D\miles |
 | --------------------- | ---- | ------- | ---- | ------- | ----- | ------- | ----- | ------- | ----- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- |
@@ -578,7 +589,7 @@ Here is the three algorithm results, we record several times test results and pl
 
 <h3>5. Cycle Detection</h3>
 
-<h4>5.1 Function</h4>
+<h3>5.1 Function</h3>
 
 ```c++
 bool CycleDetection(std::vector<double> &square);
@@ -586,7 +597,7 @@ bool CycleDetection(std::vector<double> &square);
 
 ​	we use DFS to traverse all the nodes and return true if there is a back edges. The time complexity is O(N), here is the results for this function, as you can see, green line is the edge for the neighbors, the first figure doesn’t have a connected green line and the second does have a connected circle, so that’s what this function do.
 
-<h4>5.2 Results</h4>
+<h3>5.2 Results</h3>
 
 ![cy1](cy1.png)
 
@@ -606,7 +617,7 @@ The time complexity of CycleDetection is O(n).
 
 <h3>6. Topological Sort</h3>
 
-<h4>6.1 Function</h4>
+<h3>6.1 Function</h3>
 
 ```c++
 std::vector<std::string> DeliveringTrojan(std::vector<std::string> &location_names,
@@ -617,7 +628,7 @@ The flowchart show how it works:
 
 ![tp1](tp1.png)
 
-<h4>6.2 Results</h4>
+<h3>6.2 Results</h3>
 
 Here is the nodes information and dependencies.
 
@@ -637,7 +648,7 @@ The time coimplexity of TopologicalSort is O(VE).
 
 <h3>7. FindNearby</h3>
 
-<h4>7.1 Function</h4>
+<h3>7.1 Function</h3>
 
 ```c++
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k);
@@ -647,7 +658,7 @@ When encountering a new node that has such attribute, we use binary search to fi
 
 ![fnbtu](fnbtu.png)
 
-<h4>7.2 Result</h4>
+<h3>7.2 Result</h3>
 
 ![fnbr](fnbr.png)
 
