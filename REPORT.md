@@ -18,37 +18,32 @@
 
 
 
-
-
 ## Member Functions & Variables
 
-### Phase 1
+| Name                                             | Description                                                  |
+| ------------------------------------------------ | ------------------------------------------------------------ |
+| **Phase 1**                                      |                                                              |
+| [.Autocomplete](#autocomplete)                   | Complete the location name given a half-word                 |
+| [.GetLat](#getlat])                              | Return the latitude of a location                            |
+| [.GetLon](#getlon])                              | Return the longtitude of a location                          |
+| [.GetName](#getname)                             | Return the name of a location                                |
+| [.GetID](#getid)                                 | Return the unique identification of a location               |
+| [.GetNeighborIDs](#getneighborids)               | Return neighbors of a location                               |
+| [.GetPosition](#getposition)                     | Return the coordinate of a location                          |
+| [.CalculateEditDistance](#calculateeditdistance) | Calculate a the shortest edit distance of two strings        |
+| [.FindClosestName](findclosestname)              | Find out the cloest name matched with the given one          |
+| **Phase 2**                                      |                                                              |
+| [.CalculateShortestPath_Bellman_Ford](#bellman)  | Given two location, return its shortest path using bellman algorithm |
+| [.CalculateShortestPath_Dijkstra](#dijkstra)     | Given two location, return its shortest path using dijkstra  algorithm |
+| [.CycleDetection](#cycledetection)               | Check whether there exists a loop edges in a set of nodes and edges |
+| [.DeliveringTrojan](#topo)                       | Sort the nodes in the order of topological                   |
+| **Phase 3**                                      |                                                              |
+| [.TravellingTrojan_Brute_force](#bruteforce)     | Given a set of nodes, return the solution for TSP problems   |
+| [.TravellingTrojan_Backtracking](#backtracking)  | Given a set of nodes, return the solution for TSP problems optimized by DP and BT |
+| [.TravellingTrojan_2opt](#2opt)                  | Return a heuristic solution for TSP problems                 |
+| [.FindNearby](#findnearby)                       | Given a radius and search the location nearby                |
 
-| Name                               | Description                                           |
-| ---------------------------------- | ----------------------------------------------------- |
-| [.Autocomplete](#autocomplete)     | Complete the location name given a half-word          |
-| [.GetLat](#getlat])                | Get the latitude of a location                        |
-| [.GetLon](#getlon])                | Get the longtitude of a location                      |
-| [.GetName](#getname)               | Get the name of a location                            |
-| [.GetID](#getid)                   | Get the unique identification of a location           |
-| [.GetNeighborIDs](#getneighborids) | Get neighbors of a location                           |
-| [.GetPosition](#getposition)                     |                                                       |
-| [.CalculateEditDistance](#calculateeditdistance)           | Calculate a the shortest edit distance of two strings |
-| [.FindClosestName](findclosestname)          | Find out the cloest name matched with the given one   |
-
-[TEST Phase1](#test_phase1)
-
-
-
-### Phase 2
-
-| Name                                                  | Description |
-| -------------------------------------                 | ----------- |
-| [.CalculateShortestPath_Bellman_Ford](#bellman)       |             |
-| [.CalculateShortestPath_Dijkstra](#dijkstra)          |             |
-| [.CycleDetection](#cycledetection)                    |             |
-| [.DeliveringTrojan](#topo)                            |             |
-|                                                       |             |
+[TEST Phase1](#test_phase1) | [TEST_Phase2](#test_phase2) | [TEST_Phase3](#test_phase3)
 
 
 
@@ -74,9 +69,11 @@ It will take a long time if we just search a name in an unordered dataset. So we
 
 We pre-sort the name list of all the nodes in the order of string. When given a name, we add a letter `z` and space because the name appear only in this range. Then we use **binary search** to find out the range between these two.
 
+For the further detail of our binary search function, please see [Binary Search](#binarysearch).
+
 - **Time complexity**
 
-  `O(log n)`
+  `O(log n)` | `0ms`
 
 
 
@@ -115,6 +112,12 @@ double GetLat(const std::string& id);
 
 We already have the mapping from id to its node information. It's easy.
 
+- **Time Complexity**
+
+  `O(1)~O(log n)` | `0ms`
+
+  
+
 ---
 
 <h3>GetLon</h3> <div id="getlon"></div>
@@ -123,6 +126,12 @@ We already have the mapping from id to its node information. It's easy.
 double GetLon(const std::string& id);
 ```
 
+**Time Complexity**
+
+`O(1)~O(log n)` | `0ms`
+
+
+
 ---
 
 <h3>GetName</h3> <div id="getname"></div>
@@ -130,6 +139,12 @@ double GetLon(const std::string& id);
 ```c++
 std::string GetName(const std::string& id);
 ```
+
+- **Time Complexity**
+
+  `O(1)~O(log n)` | `0ms`
+
+
 
 ---
 
@@ -143,7 +158,7 @@ Use our **binary search** model to search a node entire information through its 
 
 - **Time Complexity**
 
-  `O(log n)`
+  `O(log n)` | `0ms`
 
   
 
@@ -171,12 +186,15 @@ Use our **binary search** model to search a node entire information through its 
 std::vector<std::string> GetNeighborIDs(const std::string& id);
 ```
 
+- **Time Complexity**
+
+  `O(1)~O(log n)` | `0ms` 
+
+
 
 
 
 ---
-
-
 
 <h3>GetPosition</h3> <div id="getposition"></div>
 
@@ -186,7 +204,9 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name);
 
 - **Time Complexity**
 
-  `O(log n)`
+  `O(log n)` | `0ms`
+  
+  
 
 ---
 
@@ -208,7 +228,7 @@ This table memorize what is the shortest edit distance so far. Since we update e
 
 - **Time Complexity**
 
-  `O(mn)`  m and n is the string length respectively.
+  `O(mn)`  m and n is the string length respectively. | `0ms`
 
   
 
@@ -235,7 +255,7 @@ We compare all the possible name with the given one and call the function `Calcu
 
 - **Time Complexity**
 
-  `O(n)`
+  `O(n)` | `0ms`
 
   
 
@@ -303,22 +323,39 @@ Use queue to store the node that just being updated. When update a node, put it 
 
 - **Time Complexity**
 
-  `O(VE)` V and E are the numbers of vertices and edges.
+  `O(VE)` V and E are the numbers of vertices and edges. | `800ms`
 
    
 
 - **Example**
 
-  [input] QWQ
+  [input] 
 
   ```c++
+  auto v = tmap.CalculateShortestPath_Bellman_Ford("Los Angeles & Olympic", "Vermont Elementary School");
   ```
-
+  
+  or using MapUI
+  
+  ```bash
+  $ 3
+  $ Los Angeles & Olympic
+  $ Vermont Elementary School
+  ```
+  
+  
+  
   [output]
-
+  
   ```
+  5002237122 2820043671 3659488053 2871010078 
+  ... 
+  6818427893 6818427894 6818427895 6807909277 358794109 
+  The distance of the path is:2.96658 miles
+  **************************************************************
+  Time taken by function: 861 ms
   ```
-
+  
   
 
 
@@ -338,7 +375,7 @@ We create a boolean flag to mark visited node.
 
 - **Time Complexity**
 
-  `O( (V+E)log(V+E) )`
+  `O( (V+E)log(V+E) )`| `100ms`
 
 
 
@@ -353,8 +390,15 @@ We create a boolean flag to mark visited node.
   [output]
 
   ```
-  5002237122 2820043671 3659488053 2871010078 ... 6818427893 6818427894 6818427895 6807909277 358794109 
+  5002237122 2820043671 3659488053 2871010078 
+  ... 
+  6818427893 6818427894 6818427895 6807909277 358794109 
+  The distance of the path is:2.96658 miles
+  **************************************************************
+  Time taken by function: 109 ms
   ```
+  
+  <img src="./img/resource/2_dijsktra_path1.png" alt="2_dijsktra_path1" style="zoom:50%;" /> <img src="/Users/randle_h/Desktop/final-project-RandleH/img/resource/2_dijsktra_path2.jpg" alt="2_dijsktra_path2" style="zoom:50%;" />
 
 
 
@@ -370,15 +414,21 @@ We create a boolean flag to mark visited node.
 
   <img src="./img/resource/2_bellman_dijsktra_comp_2.jpg" alt="2_bellman_dijsktra_comp_2" style="zoom:80%;" />
 
+
+
+`Bellman` is almost 8 times slower then `Dijkstra` algorithm.
+
+
+
 ---
 
-<h3>CycleDetection</h3> <div id="cycledetection"></div>
+<h3><font face='courier'>CycleDetection</font></h3> <div id="cycledetection"></div>
 
-Check the existence for a cycle path in a subgraph. Use DFS to traverse all the nodes and return true if a neighbour has been visited twice (except parents) 
+Check the existence for a cycle path in a subgraph. Use DFS to traverse all the nodes and return true if a neighbour has been visited twice (except parents). 
 
 - **Time Complexity**
 
-  `O(n)`
+  `O(n)`| `2ms`
 
   
 
@@ -426,13 +476,13 @@ Check the existence for a cycle path in a subgraph. Use DFS to traverse all the 
 
   <img src="./img/resource/2_cycle_2.png" alt="2_cycle_2" style="zoom:100%;" /> 
 
-
+There is a cycle appearing at the bottom.
 
 
 
 ---
 
-<h3>DeliveringTrojan</h3> <div id="topo"></div>
+<h3><font face='courier'>DeliveringTrojan</font></h3> <div id="topo"></div>
 
 We impliment this function by the following flow chart.
 
@@ -450,7 +500,7 @@ Use Breath First Search to iterate the graph nodes.
 
 - **Time Complexity**
 
-  `O(VE)`
+  `O(VE)`| `0ms`
 
    
 
@@ -468,6 +518,259 @@ Use Breath First Search to iterate the graph nodes.
 
 
 
+---
+
+<h3><font face='courier'>TravellingTrojan_Brute_force</font></h3> <div id="bruteforce"></div>
+
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
+      std::vector<std::string> location_ids);
+```
+
+We impliment this function by the following flow chart.
+
+<img src="./img/resource/3_bruteforce_1.png" alt="3_bruteforce_1" style="zoom:60%;" />
+
+This algorithm mainly is to permutate all the nodes and calculate the shortest distance. We use `std::next_permutation` to help as generate a permutation sequence.
+
+- **Time Complexity**
+
+  `O(n!)`| `40ms(8 nodes)`
+
+ 
+
+- **Example**
+
+  [input]
+
+  ```c++
+  Please input the number of the places:8
+  "7864610982","6512300966","1855145665","7424270456","6818427895","4276259789","6814769287","1614922706"
+  ```
+  
+  [output]
+  
+  ```
+  *************************Results******************************
+  TravellingTrojan_Brute_force
+  "7864610982","6814769287","6818427895","4276259789","6512300966","1855145665","7424270456","1614922706","7864610982",
+  The distance of the path is:7.28524 miles
+  **************************************************************
+  You could find your animation at src/lib/output0.avi.          
+  Time taken by function: 30 ms
+  
+  ```
+
+
+
+
+
+---
+
+<h3><font face='courier'>TravellingTrojan_Backtracking</font></h3> <div id="backtracking"></div>
+
+This is a optimized version of `Bruteforce` by using dynamic programming memorizing.
+
+**Optimization 1**
+
+We use distance table instead of calculate all the time.
+
+<img src="./img/resource/3_bp_1.png" alt="3_bp_1" style="zoom:50%;" />
+
+It takes a lot of time doing float number computation. Here is the idea that we calculate the distance, cross symbol is the element we will assign directly(because distance from A->B is equal to B->A, only need to calculate once).
+
+
+
+**Optimization 2**
+
+We store the distance from the previous path, so we don't need to calculate from the vary beginning.
+
+<img src="./img/resource/3_bo_2.png" alt="3_bo_2" style="zoom:50%;" />
+
+All you need to do is to add on current distance and see whether it exceeds the minimum one stored in our result table.
+
+If not, continue the proceed, else abort the process and continue for the next permutation.
+
+
+
+**Permutation**
+
+For backtracking, we make some optimizations on it, we create our permutation template, here is the instruction:
+
+1. When not reach the end, move the pivot (aka. cs ) to the next. 
+
+2. Swap the element you choose with the pivot one.
+
+3. When reach the end, do something
+
+- [Demo Code]
+
+  ```c++
+  void helper( vector<int> &v, size_t cs, size_t ce, vector<vector<int>> &res){
+      if( cs==ce ){                    // 首尾一致
+          res.push_back(v);            // 计录结果
+          return;
+      }
+      
+      for( size_t i=cs; i<=ce; ++i ){  // 将 v[cs:ce]看成子数组,首项cs作为选中项
+          std::swap( v[cs], v[i] );    // 挨个交换, 轮流做首项(选中项) 
+          helper( v, cs+1, ce, res );  // 排除首项, 余下递归
+          std::swap( v[cs], v[i] );    // 恢复进数组
+      }
+  }
+  
+  vector<vector<int>> permutate( vector<int> &v ){
+      vector<vector<int>> res;
+      helper( v, 0, v.size()-1, res );
+      return res;
+  }
+  ```
+
+
+
+
+
+- **Time Complexity**
+
+  `O(n!)` - worst cases
+
+  `O(n^2*2^n)`- general cases
+  
+   `0ms(8 nodes)`
+
+
+
+- **Example**
+
+  [input]
+
+  ```c++
+  Please input the number of the places:8
+  "7864610982","6512300966","1855145665","7424270456","6818427895","4276259789","6814769287","1614922706"
+  ```
+  
+  [output]
+  
+  ```
+  *************************Results******************************
+  TravellingTrojan_Backtracking
+  "7864610982","1614922706","7424270456","1855145665","6512300966","4276259789","6818427895","6814769287","7864610982",
+  The distance of the path is:7.28524 miles
+  **************************************************************
+  ```
+
+
+
+ 
+
+---
+
+<h3><font face='courier'>TravellingTrojan_2opt</font></h3> <div id="2opt"></div>
+
+The result of this function might not be the optimal one, but reduce the chance to get the worest answer. We use two for loops to obtain sub part in a location and reverse 2 edges between 2 nodes if the distance is smaller than the previous one.
+
+2-OPT is similar to the Brute force, however there is no permutation in this algorithm.
+
+- **Time Complexity**
+
+  `O(n^2 + MAX_COUNT)`| `0ms`
+
+  
+
+- **Example**
+
+  [input]
+
+  ```c++
+  Please input the number of the places:8
+  "7864610982","6512300966","1855145665","7424270456","6818427895","4276259789","6814769287","1614922706"
+  ```
+  
+  [output]
+  
+  ```
+  *************************Results******************************
+  TravellingTrojan_2opt
+  "7864610982","6814769287","6818427895","4276259789","6512300966","1855145665","7424270456","1614922706","7864610982",
+  The distance of the path is:7.28524 miles
+  **************************************************************
+  You could find your animation at src/lib/output0_2opt.avi.     
+  Time taken by function: 0 ms
+  ```
+
+
+
+- **Comparison**
+
+  | Method/Nodes       | 8    | 9     | 10     | 11      | 12      | 13       | 14       | 15       | 20       |
+  | ------------------ | ---- | ----- | ------ | ------- | ------- | -------- | -------- | -------- | -------- |
+  | Brute Force        | 17ms | 281ms | 2700ms | 35706ms | 85734ms | $\infin$ | $\infin$ | $\infin$ | $\infin$ |
+  | Back Tracking + DP | 0ms  | 2ms   | 10ms   | 102ms   | 272ms   | 9724ms   | 23723ms  | 73688ms  | $\infin$ |
+  | 2-Opt              | 1ms  | 0ms   | 1ms    | 2ms     | 2ms     | 8ms      | 9ms      | 12ms     | 42ms     |
+
+  
+
+  | Method\Distance | 8       | 9       | 10      | 11      | 12      | 13      | 14      | 15      | 20      |
+  | --------------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- |
+  | Brute Force     | 9.35036 | 10.9525 | 8.36814 | 11.1948 | 11.8797 | Unknown | Unknown | Unknown | Unknown |
+  | Backtracking    | 9.35036 | 10.9525 | 8.36814 | 11.1948 | 11.8797 | 11.4554 | 9.67194 | 12.0943 | Unknown |
+  | 2-OPT           | 9.36361 | 10.9525 | 8.36814 | 11.2853 | 12.4787 | 11.4454 | 9.67564 | 12.5366 | 15.0258 |
+  
+  As you can see `2-OPT` may not give the correct answer but it is super fast then the others.
+  
+  
+  
+  We plot the time diagram for 9 rounds and for the increasing number of nodes
+  
+  ![3_tsp1](./img/resource/3_tsp1.png) <img src="./img/resource/3_tsp2.png" alt="3_tsp2" style="zoom:100%;" />
+
+The second graph was compressed by the log function.
+
+
+
+---
+
+<h3><font face='courier'>FindNearby</font></h3> <div id="findnearby"></div>
+
+We impliment this function by the following flow chart.
+
+<img src="./img/resource/3_fnb_1.png" alt="3_fnb_1" style="zoom:50%;" />
+
+We don't use any data structure, instead we use a vector that can grow up quickly by sorted order. Suppose we found a node that meets the requirement, we insert it into the vector using binary search to find out the correct position.
+
+- **Time Complexity**
+
+  `O(nlogn)`  - Assume the hashmap count as `O(1)`
+
+
+
+- **Example**
+
+  [input]
+
+  ```c++
+  Please input the attribute:supermarket
+  Please input the locations:Chevron
+  Please input radius r:5
+  Please input number k:10
+  ```
+
+  [output]
+
+  ```
+  *************************Results******************************
+  Find Nearby Results:
+  1 Cal Mart Beer & Wine Food Store
+  2 Trader Joes
+  3 Ralphs
+  4 Food 4 Less
+  Time taken by function: 1 ms
+  ```
+
+  
+
+
+
 
 
 
@@ -476,9 +779,32 @@ Use Breath First Search to iterate the graph nodes.
 
 <h3>rhqwq::relax_</h3> <div id="rhqwqrelax"></div>
 
+```c++
+bool relax_( const rhqwq::BellmanInfo_t &info_current, rhqwq::BellmanInfo_t &info_neighbor );
+```
+
+Given a node and its neighbor, if it is necessary to relax its neighbor, return `true`, else return `false`.
 
 
 
+<h3>rhqwq::tolowercase_</h3> <div id="tolowercase"></div>
+
+```c++
+static std::string tolowercase_(const std::string &str);
+```
+
+Given a string, return its version of lower case.
+
+
+
+<h3>rhqwq::binary_search_</h3> <div id="binarysearch"></div>
+
+```c++
+template<class T, class N>
+static std::pair<bool,size_t> binary_search_(const vector<std::pair<T,N> >& list, const T& tar );
+```
+
+Given a list and a target, return a pair. The first element indicates whether it was found. If so, then the second object is the exactly index. Otherwise, it tells you where should be inserted.
 
 
 
@@ -492,6 +818,13 @@ Use Breath First Search to iterate the graph nodes.
 | `distance` | `double`   | `INFINITY`           | To record the distance between the nodes          |
 
 
+
+<h3>rhqwq::Dijkstra_Info_t</h3> <div id="rhqwqbellman"></div>
+
+| Member             | Type   | Initialization Value | Description                           |
+| ------------------ | ------ | -------------------- | ------------------------------------- |
+| `visited`          | `bool` | `false`              | Indicate whether this node is visited |
+| `$Bellman_Info_t$` |        |                      |                                       |
 
 
 
@@ -572,255 +905,172 @@ Use Breath First Search to iterate the graph nodes.
 
 
 
+<h3>Test - Phase 2</h3> <div id="test_phase2"></div>
 
+- **Case 1**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
+  ```
+  ```
 
+  
 
+- **Case 2**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
+  ```
+  
+  ```
 
+  
 
+- **Case 3**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
+  ```
+  
+  ```
 
+  
 
+- **Case 4**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
+  ```
+  
+  ```
 
+  
 
 
 
 
 
+<h3>Test - Phase 3</h3> <div id="test_phase3"></div>
 
+- **Case 1**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
+  ```
+  
+  ```
 
+  
 
+- **Case 2**
 
+  [input]
 
+  ```
+  
+  ```
 
+  [output]
 
-<h3>3.Calculate shortest path between two places</h3>
+  ```
+  
+  ```
 
-<h3>3.1 Function</h3>
+  
 
-```c++
-std::vector<std::string> CalculateShortestPath_Dijkstra(std::string &location1_name,
-                                               std::string &location2_name);
-std::vector<std::string> CalculateShortestPath_Bellman_Ford(std::string &location1_name,
-                                               std::string &location2_name);
-```
+- **Case 3**
 
-For Bellman_Ford, the flowchart explains how it works:
+  [input]
 
-![image-20220501014410310](image-20220501014410310.png)
+  ```
+  
+  ```
 
-There is a optinization during loading a node,We can start our search from the one that being updated during the last iteration. We use queue to record that.
+  [output]
 
-For Dijkstra, the flowchart explains how it works:
+  ```
+  
+  ```
 
-![image-20220501014431626](image-20220501014431626.png)
+  
 
-<h3>3.2 Results</h3>
+- **Case 4**
 
-Start location: ‘Los Angeles & Olympic’
+  [input]
 
-Destination: ‘Vermont Elementary School’
+  ```
+  
+  ```
 
-<h5>Bellman_Ford</h5>
+  [output]
 
-![1111](1111.png)
+  ```
+  
+  ```
 
-<h5>Dijkstra</h5>
+  
 
-![222](222.png)
+  
 
-![Picture3](Picture3.png)
 
-![Picture4](Picture4.jpg)
 
-The route is just the same as the Google map!
+## Summary
 
-<h5>Comparison</h5>
+In this final project, While completing the basic functions, we mainly focus on speeding up the program. Fortunately, during the presentation, we found that our running speed performs better than most of students in this class.
 
-Time spend for 1 route
+In the improvement of the code, we analyzed the tolerance of users in using the app. We believed that most users were more tolerant of the former in the process of loading and using the app, so we sacrificed the loading time of the program in exchange for the fast running of the function
 
-![tu1](tu1.jpg)
+But we still have some functions that are not implemented due to time constraints ——3-opt and dynamic, animated UI. 
 
-Time spend for 10 routes
+This project gave us a good opportunity in writing C++ codes, and give us a deeper understanding of algorithms, which is very helpful for our career.
 
-![tu2](tu2.jpg)
 
-Dijkstra alwasy has a better performance than Bellman Ford.
 
-​	The time complexity of Bellman ford is O((V+E)log(V)).
 
-​	The time complexity of Dijkstra is O(VE).
 
-<h3>4.Traveling Sales Man</h3>
 
-<h3>4.1 Function</h3>
 
-```c++
-std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
-      std::vector<std::string> location_ids);
-std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Backtracking(
-      std::vector<std::string> location_ids);
-std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
-      std::vector<std::string> location_ids);
-```
 
-For Brute force, here is the flowchart:
 
-![bf1](bf1.png)
 
-2-OPT is similar to the Brute force, however there is no permutation in this algorithm, but two for-loops to calculate the shortest path in a limited condition, so the results may not be the shortest distance.
 
-For backtracking, we make some optimizations on it, we create our permutation template, here is the instruction:
 
-•When not reach the end, move the pivot (aka. cs ) to the next. 
 
-•Swap the element you choose with the pivot one.
 
-•When reach the end, do something
 
-​	Calculate distance are very costing since it use a lot of floating number computation. Our goal is to avoid duplicated computation. 
-​	First, we memorize all the possible distance calculation by creating table to record that. The time complexity is O(n^2). But we only need to make a strictly up triangular matrix. 
-​	Second, memorize the distance of the previous path so that we don’t need to calculate it from the vary beginning. 
-​	Third, stop early. When we found that current path has already exceed the minimum one that recorded, stop.
 
-Here is the idea that we calculate the distance, cross symbol is the element we will assign directly(because distance from A->B is equal to B->A, only need to calculate once).
 
-![matrix](matrix.png)
 
-
-
-<h3>4.2 Results</h3>
-
-| Method\Nodes\Distance | 8\ms | D\miles | 9\ms | D\miles | 10\ms | D\miles | 11\ms | D\miles | 12\ms | D\miles | 13\ms   | D\miles | 14\ms   | D\miles | 15\ms   | D\miles | 20\ms   | D\miles |
-| --------------------- | ---- | ------- | ---- | ------- | ----- | ------- | ----- | ------- | ----- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- |
-| Brute Force           | 17   | 9.35036 | 281  | 10.9525 | 2700  | 8.36814 | 35706 | 11.1948 | 85734 | 11.8797 | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown |
-| Backtracking          | 0    | 9.35036 | 2    | 10.9525 | 10    | 8.36814 | 102   | 11.1948 | 272   | 11.8797 | 9724    | 11.4554 | 9724    | 9.67194 | 23723   | 12.0943 | Unknown | Unknown |
-| 2-OPT                 | 1    | 9.36361 | 0    | 10.9525 | 1     | 8.36814 | 2     | 11.2853 | 2     | 12.4787 | 8       | 11.4454 | 9       | 9.67564 | 12      | 12.5366 | 42      | 15.0258 |
-
-
-
-![tsp1](tsp1.png)
-
-
-
-![tsp2](tsp2.png)
-
-![tsp3](tsp3.png)
-
-Here is the three algorithm results, we record several times test results and plot it , in small number of nodes, backtracking and 2-opt performs better than brute force, but as the number of nodes getting larger, 2-opt stays the performance, but the rest will take tremendous time to get result, the second we use log function to process the data.
-
-​	The time complexity of Brute force is O(n!).
-​	The time complexity of Backtracking is O(n!) but better than bruteforce.
-​	The time complexity of 2-OPT is (n²+MAX_COUNT).
-
-<h3>5. Cycle Detection</h3>
-
-<h3>5.1 Function</h3>
-
-```c++
-bool CycleDetection(std::vector<double> &square);
-```
-
-​	we use DFS to traverse all the nodes and return true if there is a back edges. The time complexity is O(N), here is the results for this function, as you can see, green line is the edge for the neighbors, the first figure doesn’t have a connected green line and the second does have a connected circle, so that’s what this function do.
-
-<h3>5.2 Results</h3>
-
-![cy1](cy1.png)
-
-![cy11](cy11.png)
-
-
-
-![cy2](cy2.png)
-
-![Screen Shot 2022-05-01 at 1.50.04 AM](Screen Shot 2022-05-01 at 1.50.04 AM.png)
-
-
-
-Green line is the edge for the neighbors, the first figure doesn’t have a connected green line and the second does have a connected circle.
-
-The time complexity of CycleDetection is O(n).
-
-<h3>6. Topological Sort</h3>
-
-<h3>6.1 Function</h3>
-
-```c++
-std::vector<std::string> DeliveringTrojan(std::vector<std::string> &location_names,
-                                            std::vector<std::vector<std::string>> &dependencies);
-```
-
-The flowchart show how it works:
-
-![tp1](tp1.png)
-
-<h3>6.2 Results</h3>
-
-Here is the nodes information and dependencies.
-
-<img src="Screen Shot 2022-05-01 at 1.39.05 AM.png" alt="Screen Shot 2022-05-01 at 1.39.05 AM" style="zoom:150%;" />
-
-![tpp](tpp.png)
-
-![tpp tu](tpp tu.jpg)
-
-Here is the other results that these nodes has a dependency loop.(No topological Sort).
-
-![tp22](tp22.png)
-
-![tp2r](tp2r.png)
-
-The time coimplexity of TopologicalSort is O(VE).
-
-<h3>7. FindNearby</h3>
-
-<h3>7.1 Function</h3>
-
-```c++
-std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k);
-```
-
-When encountering a new node that has such attribute, we use binary search to find a right position to insert it to our container. Then, the k-th elements in this container are the answer. Here is the flowchart:
-
-![fnbtu](fnbtu.png)
-
-<h3>7.2 Result</h3>
-
-![fnbr](fnbr.png)
-
-
-
-![fnb222](fnb222.png)
-
-Green point is the center, red points are the results that satisfy our requirement.
-
-<h3>8. Summary</h3>
-
-​	In this final project, While completing the basic functions, we mainly focus on speeding up the program. Fortunately, during the presentation, we found that our running speed performs better than most of students in this class.
-
-​	In the improvement of the code, we analyzed the tolerance of users in using the app. We believed that most users were more tolerant of the former in the process of loading and using the app, so we sacrificed the loading time of the program in exchange for the fast running of the function
-
-​	But we still have some functions that are not implemented due to time constraints ——3-opt and dynamic, animated UI. 
-
-​	This project gave us a good opportunity in writing C++ codes, and give us a deeper understanding of algorithms, which is very helpful for our career.
 
 
 

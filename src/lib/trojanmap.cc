@@ -874,9 +874,12 @@ TrojanMap::FindNearby(std::string attributesName, std::string name, double r, in
             continue;
         
         if ( i.second.attributes.count(attributesName) >0 ){
-            std::pair<Info_t, char> tmp = std::make_pair(Info_t( CalculateDistance( i.second.id, root.id ), &i.second ), 0);
-            size_t idx = rhqwq::binary_search_( res_list, tmp.first).second;
-            res_list.insert(res_list.begin()+idx, tmp);
+            double distance = CalculateDistance( i.second.id, root.id );
+            if( distance < r ){
+                std::pair<Info_t, char> tmp = std::make_pair(Info_t( distance, &i.second ), 0);
+                size_t idx = rhqwq::binary_search_( res_list, tmp.first).second;
+                res_list.insert(res_list.begin()+idx, tmp);
+            }
         }
     }
     
