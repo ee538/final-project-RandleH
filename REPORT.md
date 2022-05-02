@@ -912,12 +912,26 @@ Given a list and a target, return a pair. The first element indicates whether it
   [input]
 
   ```
-  
+  $ Ralphs
+  $ Target
   ```
 
   [output]
 
   ```
+  *************************Dijkstra*****************************
+  *************************Results******************************
+  "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131","7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705","6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011","6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323","6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159","6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486","7071032399","4015372485","6813379479","6813379584","6814769289","5237417650",
+  The distance of the path is:0.927969 miles
+  **************************************************************
+  Time taken by function: 121 ms
+  
+  *************************Bellman_Ford*************************
+  *************************Results******************************
+  "2578244375","4380040154","4380040158","4380040167","6805802087","8410938469","6813416131","7645318201","6813416130","6813416129","123318563","452688940","6816193777","123408705","6816193774","452688933","452688931","123230412","6816193770","6787470576","4015442011","6816193692","6816193693","6816193694","4015377691","544693739","6816193696","6804883323","6807937309","6807937306","6816193698","4015377690","4015377689","122814447","6813416159","6813405266","4015372488","4015372487","6813405229","122719216","6813405232","4015372486","7071032399","4015372485","6813379479","6813379584","6814769289","5237417650",
+  The distance of the path is:0.927969 miles
+  **************************************************************
+  Time taken by function: 745 ms
   ```
 
   
@@ -927,13 +941,19 @@ Given a list and a target, return a pair. The first element indicates whether it
   [input]
 
   ```
-  
+  -118.299
+  -118.264
+  34.032
+  34.011
   ```
 
   [output]
 
   ```
-  
+  *************************Results******************************
+  there exists a cycle in the subgraph 
+  **************************************************************
+  Time taken by function: 9 ms
   ```
 
   
@@ -943,13 +963,19 @@ Given a list and a target, return a pair. The first element indicates whether it
   [input]
 
   ```
-  
+  -118.290
+  -118.289
+  34.032
+  34.011
   ```
 
   [output]
 
   ```
-  
+  *************************Results******************************
+  there exist no cycle in the subgraph 
+  **************************************************************
+  Time taken by function: 18 ms
   ```
 
   
@@ -958,21 +984,30 @@ Given a list and a target, return a pair. The first element indicates whether it
 
   [input]
 
-  ```
+  <img src="./img/resource/51801651459776_.pic.jpg" alt="51801651459776_.pic" style="zoom:40%;" />
   
-  ```
-
   [output]
 
   ```
-  
+  Please input the locations filename:./input/topologicalsort_locations.csv
+  Please input the dependencies filename:./input/topologicalsort_dependencies.csv
+  *************************Results******************************
+  There is no topological sort for the given graph.
+  **************************************************************
+  Time taken by function: 0 ms
   ```
-
   
-
-
-
-
+  
+  
+  
+  
+  [input]
+  
+  <img src="./img/resource/51821651460083_.pic.jpg" alt="51821651460083_.pic" style="zoom:40%;" />
+  
+  [output]
+  
+  <img src="./img/resource/2_topo_5.png" alt="2_topo_5" style="zoom:50%;" />
 
 <h3>Test - Phase 3</h3> <div id="test_phase3"></div>
 
@@ -981,13 +1016,39 @@ Given a list and a target, return a pair. The first element indicates whether it
   [input]
 
   ```
-  
+  8
   ```
 
   [output]
 
   ```
+  "6818427931","7507259317","1924840863","4015405552","7646230665","2607729775","7861033573","6807615070",
+  Calculating ...
+  *************************Results******************************
+  TravellingTrojan_Brute_force
+  "6818427931","7507259317","4015405552","7646230665","7861033573","1924840863","2607729775","6807615070","6818427931",
+  The distance of the path is:9.08711 miles
+  **************************************************************
+  You could find your animation at src/lib/output0.avi.          
+  Time taken by function: 20 ms
   
+  Calculating ...
+  *************************Results******************************
+  TravellingTrojan_Backtracking
+  "6818427931","6807615070","2607729775","1924840863","7861033573","7646230665","7507259317","4015405552","6818427931",
+  The distance of the path is:8.6088 miles
+  **************************************************************
+  You could find your animation at src/lib/output0_backtracking.avi.
+  Time taken by function: 0 ms
+  
+  Calculating ...
+  *************************Results******************************
+  TravellingTrojan_2opt
+  "6818427931","6807615070","2607729775","1924840863","7861033573","7646230665","7507259317","4015405552","6818427931",
+  The distance of the path is:8.6088 miles
+  **************************************************************
+  You could find your animation at src/lib/output0_2opt.avi.     
+  Time taken by function: 1 ms
   ```
 
   
@@ -997,45 +1058,24 @@ Given a list and a target, return a pair. The first element indicates whether it
   [input]
 
   ```
-  
+  school
+  Ralphs
+  5
+  5
   ```
 
   [output]
 
   ```
-  
-  ```
-
-  
-
-- **Case 3**
-
-  [input]
-
-  ```
-  
-  ```
-
-  [output]
-
-  ```
-  
-  ```
-
-  
-
-- **Case 4**
-
-  [input]
-
-  ```
-  
-  ```
-
-  [output]
-
-  ```
-  
+  *************************Results******************************
+  Find Nearby Results:
+  1 Saint Agnes Elementary School
+  2 Vermont Elementary School
+  3 Divine Providence Kindergarten and Day Nursery
+  4 Washington Boulevard School
+  5 Twenty-Fourth Street Elementary School
+  **************************************************************
+  Time taken by function: 7 ms
   ```
 
   
@@ -1053,7 +1093,6 @@ In the improvement of the code, we analyzed the tolerance of users in using the 
 But we still have some functions that are not implemented due to time constraints ——3-opt and dynamic, animated UI. 
 
 This project gave us a good opportunity in writing C++ codes, and give us a deeper understanding of algorithms, which is very helpful for our career.
-
 
 
 
