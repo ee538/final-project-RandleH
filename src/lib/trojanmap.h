@@ -177,9 +177,7 @@ class TrojanMap {
     
     
 
-    void backtracking_helper(int start, std::vector<std::vector<double>> &weights,
-    int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
-                                        std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
+//    void backtracking_helper(int start, std::vector<std::vector<double>> &weights, int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost, std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
     std::vector<std::string> Opt2swap(const std::vector<std::string> &route,int i,int k);
 
 //private:
@@ -196,11 +194,7 @@ class TrojanMap {
         return false;
     }
     
-    void backtracking_helper(int start, std::vector<std::vector<double>> &weights,
-    int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
-                             std::vector<std::string> &min_path, std::vector<std::string> &location_ids);
-    
-    std::vector<std::string>  Opt2swap(const std::vector<std::string> &route,int i,int k);
+   
 };
 
 #endif

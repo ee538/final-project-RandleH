@@ -196,3 +196,106 @@ void TrojanMap::Cycle_helper(std::string root, std::string root_parent, std::uno
     }
 }
 
+
+
+
+
+
+
+
+
+
+    if(ids.size() <= 1){
+        return make_pair( 0.0, std::vector<std::vector<std::string>>( 1,ids));
+    }
+    
+    std::pair<double, std::vector<std::vector<std::string>>> results; results.first = INFINITY;
+
+    std::vector<std::string> temp; temp.assign(ids.begin()+1,ids.end()); //std::sort(temp.begin(),temp.end());
+  
+    
+    auto root = ids[0];
+    do{
+          double cur_length = 0.0;
+  
+          for( size_t i=1; i<temp.size(); ++i ){
+              if( cur_length > results.first ){
+                  break;
+              }
+              cur_length += CalculateDistance( temp[i-1], temp[i]);
+          }
+          cur_length += CalculateDistance( root, temp[            0] );
+          cur_length += CalculateDistance( root, temp[temp.size()-1] );
+          
+          
+          
+          
+          if(cur_length < results.first){
+              results.first = cur_length;
+          
+              results.second.clear();
+              results.second.push_back({root});
+              results.second.back().insert( results.second.back().end(), temp.begin(), temp.end());
+              results.second.back().push_back(root);
+          
+          }
+        
+      }while(next_permutation(temp.begin(),temp.end()));
+      
+    
+    return results;
+
+
+
+
+std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
+                                    std::vector<std::string> location_ids) {
+    std::vector<std::string> cur_path={location_ids[0]};
+    std::vector<std::string> min_path;
+    // std::vector<std::vector<std::string>> result_path;
+    std::pair<double, std::vector<std::vector<std::string>>> results;
+    std::vector<std::vector<double>> weights(location_ids.size(),std::vector<double>(location_ids.size()));
+    double min_cost=DBL_MAX;
+    if(location_ids.size() <= 1){
+        std::vector<std::vector<std::string>> path;
+        return make_pair(0,path);
+      }
+    for(int i=0;i<location_ids.size();i++){
+      for(int j=0;j<location_ids.size();j++){
+        weights[i][j]=CalculateDistance(location_ids[i],location_ids[j]);
+      }
+    }
+    backtracking_helper(0,weights,0,0,cur_path,min_cost,min_path,location_ids);
+    min_path.push_back(location_ids[0]);
+    // for(int k=0;k<min_path.size()-1;k++){
+    //   std::vector<std::string> tmp={min_path[k],min_path[k+1]};
+    //   result_path.push_back(tmp);
+    // }
+    // result_path.push_back({min_path[min_path.size()-2],min_path[min_path.size()-1]});
+    results.first=min_cost;
+    results.second.push_back(min_path);
+    return results;
+}
+
+void TrojanMap::backtracking_helper(int start, std::vector<std::vector<double>> &weights,
+int cur_node, double cur_cost, std::vector<std::string> &cur_path, double &min_cost,
+std::vector<std::string> &min_path, std::vector<std::string> &location_ids){
+if(cur_path.size()==weights.size()){
+  double final_cost=cur_cost+weights[cur_node][start];
+  if(final_cost<min_cost){
+    min_cost=final_cost;
+    min_path=cur_path;
+  }
+  return;
+}
+if(cur_cost>=min_cost){
+  return;
+}
+for(int i=0;i<weights.size();i++){
+  if(std::find(cur_path.begin(),cur_path.end(),location_ids[i])==cur_path.end()){
+    cur_path.push_back(location_ids[i]);
+    backtracking_helper(start,weights,i,cur_cost+weights[cur_node][i],cur_path,min_cost,min_path,location_ids);
+    cur_path.pop_back();
+  }
+}
+}
