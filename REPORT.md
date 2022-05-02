@@ -31,7 +31,7 @@
 | [.GetNeighborIDs](#getneighborids)               | Return neighbors of a location                               |
 | [.GetPosition](#getposition)                     | Return the coordinate of a location                          |
 | [.CalculateEditDistance](#calculateeditdistance) | Calculate a the shortest edit distance of two strings        |
-| [.FindClosestName](findclosestname)              | Find out the cloest name matched with the given one          |
+| [.FindClosestName](#findclosestname)             | Find out the cloest name matched with the given one          |
 | **Phase 2**                                      |                                                              |
 | [.CalculateShortestPath_Bellman_Ford](#bellman)  | Given two location, return its shortest path using bellman algorithm |
 | [.CalculateShortestPath_Dijkstra](#dijkstra)     | Given two location, return its shortest path using dijkstra  algorithm |
