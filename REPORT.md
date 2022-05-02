@@ -984,31 +984,30 @@ Given a list and a target, return a pair. The first element indicates whether it
 
   [input]
 
-  ![51801651459776_.pic](51801651459776_.pic.jpg)
+  <img src="./img/resource/51801651459776_.pic.jpg" alt="51801651459776_.pic" style="zoom:40%;" />
   
-  
-
-  
-
-  ![51821651460083_.pic](51821651460083_.pic-1472122.jpg)
-  
-  
+  [output]
 
   ```
-  
+  Please input the locations filename:./input/topologicalsort_locations.csv
+  Please input the dependencies filename:./input/topologicalsort_dependencies.csv
+  *************************Results******************************
+  There is no topological sort for the given graph.
+  **************************************************************
+  Time taken by function: 0 ms
   ```
+  
+  
+  
+  
+  
+  [input]
+  
+  <img src="./img/resource/51821651460083_.pic.jpg" alt="51821651460083_.pic" style="zoom:40%;" />
   
   [output]
   
-  ```
-  
-  ```
-  
-  
-
-
-
-
+  <img src="./img/resource/2_topo_5.png" alt="2_topo_5" style="zoom:50%;" />
 
 <h3>Test - Phase 3</h3> <div id="test_phase3"></div>
 
@@ -1077,38 +1076,6 @@ Given a list and a target, return a pair. The first element indicates whether it
   5 Twenty-Fourth Street Elementary School
   **************************************************************
   Time taken by function: 7 ms
-  ```
-
-  
-
-- **Case 3**
-
-  [input]
-
-  ```
-  
-  ```
-
-  [output]
-
-  ```
-  
-  ```
-
-  
-
-- **Case 4**
-
-  [input]
-
-  ```
-  
-  ```
-
-  [output]
-
-  ```
-  
   ```
 
   
